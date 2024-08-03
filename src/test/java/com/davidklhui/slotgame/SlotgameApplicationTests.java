@@ -8,6 +8,7 @@ class SlotgameApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// will be added
 	}
 
 }
