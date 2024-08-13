@@ -1,7 +1,6 @@
 package com.davidklhui.slotgame.model;
 
-import com.davidklhui.slotgame.exception.SymbolNameException;
-import com.davidklhui.slotgame.exception.SymbolProbabilityException;
+import com.davidklhui.slotgame.exception.SymbolException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
@@ -63,11 +62,11 @@ public class Symbol {
         this.isWild = isWild;
 
         if(this.name.equals("")){
-            throw new SymbolNameException("Invalid Name, either null or is an empty string");
+            throw new SymbolException("Invalid Name, either null or is an empty string");
         }
 
         if(! this.isProbabilityValid()){
-            throw new SymbolProbabilityException(
+            throw new SymbolException(
                     String.format("Invalid Probability value, must be between 0 and 1 inclusively, provided: %s", this.probability));
         }
     }

@@ -1,7 +1,6 @@
 package com.davidklhui.slotgame;
 
-import com.davidklhui.slotgame.exception.SymbolNameException;
-import com.davidklhui.slotgame.exception.SymbolProbabilityException;
+import com.davidklhui.slotgame.exception.SymbolException;
 import com.davidklhui.slotgame.model.Symbol;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,12 +55,12 @@ class SymbolTest {
     void symbolInvalidProbabilityTest(){
 
         // symbol is invalid case: <0
-        assertThrows(SymbolProbabilityException.class,
+        assertThrows(SymbolException.class,
                 ()-> new Symbol(1, "symbol_1", -0.01, true),
                 "Symbol Probability less than 0");
 
         // symbol is invalid case: > 1
-        assertThrows(SymbolProbabilityException.class,
+        assertThrows(SymbolException.class,
                 ()-> new Symbol(2, "symbol_2", 1.00001, true),
                 "Symbol Probability greater than 1");
 
@@ -87,19 +86,19 @@ class SymbolTest {
 
         // symbol name is null
         assertThrows(
-                SymbolNameException.class,
+                SymbolException.class,
                 ()-> new Symbol(1, null, 0.01, true),
                 "Symbol Name is null");
 
         // symbol name is an empty string
         assertThrows(
-                SymbolNameException.class,
+                SymbolException.class,
                 ()-> new Symbol(1, "", 0.01, true),
                 "Symbol Name is empty string");
 
         // symbol name only contains space
         assertThrows(
-                SymbolNameException.class,
+                SymbolException.class,
                 ()-> new Symbol(1, "    ", 0.01, true),
                 "Symbol Name only contains space");
 

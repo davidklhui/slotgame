@@ -1,8 +1,6 @@
 package com.davidklhui.slotgame;
 
-import com.davidklhui.slotgame.exception.ReelIncorrectProbabilityException;
-import com.davidklhui.slotgame.exception.ReelIncorrectSymbolsSizeException;
-import com.davidklhui.slotgame.exception.ReelSimSizeException;
+import com.davidklhui.slotgame.exception.ReelException;
 import com.davidklhui.slotgame.model.Reel;
 import com.davidklhui.slotgame.model.Symbol;
 import org.junit.jupiter.api.Test;
@@ -49,7 +47,7 @@ class ReelTest {
         Set<Symbol> symbols = new HashSet<>();
 
         assertThrows(
-                ReelIncorrectSymbolsSizeException.class,
+                ReelException.class,
                 ()-> new Reel(symbols),
                 "Given Symbol Set size < 2"
         );
@@ -57,7 +55,7 @@ class ReelTest {
         symbols.add(new Symbol(1, "a", 0.1, true));
 
         assertThrows(
-                ReelIncorrectSymbolsSizeException.class,
+                ReelException.class,
                 ()-> new Reel(symbols),
                 "Given Symbol Set size < 2"
         );
@@ -70,7 +68,7 @@ class ReelTest {
         Set<Symbol> symbols = new HashSet<>();
 
         assertThrows(
-                ReelIncorrectSymbolsSizeException.class,
+                ReelException.class,
                 ()-> new Reel(symbols),
                 "Given Symbol Set size < 2"
         );
@@ -79,7 +77,7 @@ class ReelTest {
         symbols.add(new Symbol(2, "a", 0.2, true));
 
         assertThrows(
-                ReelIncorrectProbabilityException.class,
+                ReelException.class,
                 ()-> new Reel(symbols),
                 "Total Probability is not 1"
         );
@@ -94,7 +92,7 @@ class ReelTest {
         assertDoesNotThrow(()-> new Reel(symbols), "Total Probability is slightly less than 1");
 
         symbols.add(new Symbol(5, "b", 0.000001, true));
-        assertThrows(ReelIncorrectProbabilityException.class,
+        assertThrows(ReelException.class,
                 ()-> new Reel(symbols),
                 "Total Probability exceeded 1 a lot");
 
@@ -115,7 +113,7 @@ class ReelTest {
         assertEquals(4, reel.simulate(4).size(), "Simulate Outcome Size correct");
 
         assertThrows(
-                ReelSimSizeException.class,
+                ReelException.class,
                 () -> reel.simulate(0),
                 "Cannot simulate with outcome size = 0"
         );

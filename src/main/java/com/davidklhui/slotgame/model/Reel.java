@@ -1,9 +1,6 @@
 package com.davidklhui.slotgame.model;
 
 import com.davidklhui.slotgame.exception.ReelException;
-import com.davidklhui.slotgame.exception.ReelIncorrectProbabilityException;
-import com.davidklhui.slotgame.exception.ReelIncorrectSymbolsSizeException;
-import com.davidklhui.slotgame.exception.ReelSimSizeException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -38,7 +35,7 @@ public class Reel {
         this.symbols = symbols;
 
         if(! isValidReelSize()){
-            throw new ReelIncorrectSymbolsSizeException("Symbols set is invalid, either null or having size < 2");
+            throw new ReelException("Symbols set is invalid, either null or having size < 2");
         }
 
         adjustProbabilities();
@@ -47,7 +44,7 @@ public class Reel {
 
     public List<Symbol> simulate(final int size){
 
-        if(size <= 0) throw new ReelSimSizeException(String.format("Sim Size must be at least 1, given %d", size));
+        if(size <= 0) throw new ReelException(String.format("Sim Size must be at least 1, given %d", size));
 
         final EnumeratedDistribution<Symbol> distribution = new EnumeratedDistribution<>(symbolProbabilityPair());
 
@@ -87,7 +84,7 @@ public class Reel {
                 // the difference must be extremely small, can be seen as negligible
                 selectedSymbol.setProbability(selectedSymbol.getProbability().add(difference));
             } else {
-                throw new ReelIncorrectProbabilityException(
+                throw new ReelException(
                         String.format("Reel's symbols set total probability is invalid, sum to %s", totalProbability()));
             }
 
