@@ -15,7 +15,7 @@ public class SlotSpinResult {
 
     public int getSpinPayout(){
         return this.payouts.stream()
-                .mapToInt(payout-> payout.getPayoutAmount())
+                .mapToInt(Payout::getPayoutAmount)
                 .sum();
     }
 }

@@ -2,9 +2,7 @@ package com.davidklhui.slotgame.model;
 
 import com.davidklhui.slotgame.exception.SymbolNameException;
 import com.davidklhui.slotgame.exception.SymbolProbabilityException;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;

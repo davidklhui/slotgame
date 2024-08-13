@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 
 public class SymbolDeserializer extends JsonDeserializer<Symbol> {
     @Override
-    public Symbol deserialize(JsonParser jp, DeserializationContext ctx) throws IOException, JacksonException {
+    public Symbol deserialize(JsonParser jp, DeserializationContext ctx) throws IOException {
         ObjectNode node = jp.getCodec().readTree(jp);
 
         final int id = node.get("id").asInt();
