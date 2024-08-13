@@ -1,6 +1,6 @@
 package com.davidklhui.slotgame;
 
-import com.davidklhui.slotgame.exception.SlotConfigException;
+import com.davidklhui.slotgame.exception.SlotException;
 import com.davidklhui.slotgame.model.Reel;
 import com.davidklhui.slotgame.model.Slot;
 import com.davidklhui.slotgame.model.Symbol;
@@ -101,21 +101,21 @@ class SlotTest {
         // must have at least 3
         List<Reel> reelsWithSize0 = new ArrayList<>();
         assertThrows(
-                SlotConfigException.class,
+                SlotException.class,
                 ()-> new Slot(reelsWithSize0, 3),
                 "Slot must not num reels less than 3"
         );
 
         List<Reel> reelsWithSize1 = reels.subList(0, 1);
         assertThrows(
-                SlotConfigException.class,
+                SlotException.class,
                 ()-> new Slot(reelsWithSize1, 3),
                 "Slot must not num reels less than 3"
         );
 
         List<Reel> reelsWithSize2 = reels.subList(0, 1);
         assertThrows(
-                SlotConfigException.class,
+                SlotException.class,
                 ()-> new Slot(reelsWithSize2, 3),
                 "Slot must not num reels less than 3"
         );
@@ -131,7 +131,7 @@ class SlotTest {
 
         // incorrect num of rows (<=0)
         assertThrows(
-                SlotConfigException.class,
+                SlotException.class,
                 ()-> new Slot(reels, 0),
                 "Slot must not have num rows = 0"
         );

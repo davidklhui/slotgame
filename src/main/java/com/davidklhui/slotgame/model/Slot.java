@@ -1,6 +1,6 @@
 package com.davidklhui.slotgame.model;
 
-import com.davidklhui.slotgame.exception.SlotConfigException;
+import com.davidklhui.slotgame.exception.SlotException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -34,14 +34,14 @@ public class Slot {
                 @JsonProperty("numberOfRows") final int numberOfRows){
 
         if(reels == null){
-            throw new SlotConfigException("Incorrect Slot configuration: given reels is null");
+            throw new SlotException("Incorrect Slot configuration: given reels is null");
         }
         if(reels.size() < 3){
-            throw new SlotConfigException(
+            throw new SlotException(
                     String.format("Incorrect Slot configuration, reels size <3, given %d", reels.size()));
         }
         if(numberOfRows <= 0){
-            throw new SlotConfigException(
+            throw new SlotException(
                     String.format("Incorrect Slot configuration: number of rows is invalid: give %d", numberOfRows));
         }
 
