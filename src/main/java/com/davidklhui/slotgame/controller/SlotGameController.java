@@ -21,7 +21,7 @@ public class SlotGameController {
         this.slotGameService = slotGameService;
     }
 
-    @PostMapping(value="/spin", consumes = {"application/json;charset=UTF-8"})
+    @PostMapping(value="/spin")
     public SlotSpinResult spin(@RequestBody SlotGameDefinition slotGameDefinition){
         log.info("{}", slotGameDefinition);
         return slotGameService.spin(slotGameDefinition);
