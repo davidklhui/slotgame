@@ -1,5 +1,6 @@
 
-Currently support single game by providing slot configuration and the payout definition to perform a single game simulation
+Currently support single game by providing slot configuration and the payout definition to perform a single game simulation.
+This JSON maybe messed up if you browse here. You can view it beautified if you download and open in an editor
 
 the sample payload is:
 
