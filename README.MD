@@ -4,6 +4,7 @@ This JSON maybe messed up if you browse here. You can view it beautified if you 
 
 the sample payload is:
 
+```json
 {
     "cost": 10,
     "slot": {
@@ -195,3 +196,4 @@ And the sample result is (Note that you may have different result because of the
     ],
     "spinPayout": 10
 }
+```
