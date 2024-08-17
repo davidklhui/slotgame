@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,10 +24,6 @@ public class Slot {
     private final List<Reel> reels;
     private final int numberOfRows;
 
-    public Slot(){
-        this.reels = new ArrayList<>();
-        this.numberOfRows = 0;
-    }
 
     @JsonCreator
     public Slot(@JsonProperty("reels") final List<Reel> reels,

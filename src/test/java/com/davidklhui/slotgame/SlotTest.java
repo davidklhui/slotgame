@@ -89,7 +89,7 @@ class SlotTest {
         });
 
         // for reassurance, take a look at the outcome
-        log.info("Slot simulation outcome: {}", outcomes);
+        log.debug("Slot simulation outcome: {}", outcomes);
 
     }
     

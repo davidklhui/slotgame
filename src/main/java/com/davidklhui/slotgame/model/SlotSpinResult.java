@@ -10,12 +10,12 @@ import java.util.List;
 public class SlotSpinResult {
 
     private List<List<Symbol>> spinOutcomes;
-    private List<Payout> payouts;
+    private List<SlotSpinPayout> slotSpinPayouts;
 
 
     public int getSpinPayout(){
-        return this.payouts.stream()
-                .mapToInt(Payout::getPayoutAmount)
+        return this.slotSpinPayouts.stream()
+                .mapToInt(SlotSpinPayout::getPayoutAmount)
                 .sum();
     }
 }

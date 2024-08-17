@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public class Payout {
+public class SlotSpinPayout {
 
     private final PayoutDefinition payoutDefinition;
     private final int payoutAmount;

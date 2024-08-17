@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 public class SymbolDeserializer extends JsonDeserializer<Symbol> {
     @Override
@@ -34,7 +33,7 @@ public class SymbolDeserializer extends JsonDeserializer<Symbol> {
             final double probability = node.get("probability").asDouble();
             return new Symbol(id, name, probability, isWild);
         } else {
-            return new Symbol(id, name, BigDecimal.ZERO, isWild);
+            return new Symbol(id, name, isWild);
         }
 
     }
