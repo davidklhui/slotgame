@@ -36,11 +36,11 @@ public class Symbol {
     // this id is used to determine outcome pattern
     // same id implies the same symbol regardless of the other fields
     @Getter
-    private final int id;
+    private final int symbolId;
 
     // display name of the symbol
     @Getter
-    private final String name;
+    private final String symbolName;
 
     // probability of occurrence of symbol, must be between 0 & 1
     @Setter
@@ -51,17 +51,17 @@ public class Symbol {
     @Getter
     private final boolean isWild;
 
-    public Symbol(final int id,
-                  final String name,
+    public Symbol(final int symbolId,
+                  final String symbolName,
                   final BigDecimal probability,
                   final boolean isWild){
 
-        this.id = id;
-        this.name = StringUtils.trimToEmpty(name);
+        this.symbolId = symbolId;
+        this.symbolName = StringUtils.trimToEmpty(symbolName);
         this.probability = probability.setScale(SCALE, RoundingMode.HALF_UP);
         this.isWild = isWild;
 
-        if(this.name.equals("")){
+        if(this.symbolName.equals("")){
             throw new SymbolException("Invalid Name, either null or is an empty string");
         }
 
@@ -71,38 +71,38 @@ public class Symbol {
         }
     }
 
-    public Symbol(final int id,
-                  final String name,
+    public Symbol(final int symbolId,
+                  final String symbolName,
                   final double probability,
                   final boolean isWild){
 
-        this(id, name, BigDecimal.valueOf(probability), isWild);
+        this(symbolId, symbolName, BigDecimal.valueOf(probability), isWild);
     }
 
 
-    public Symbol(final int id,
-                  final String name,
+    public Symbol(final int symbolId,
+                  final String symbolName,
                   final double probability){
 
-        this(id, name, probability, false);
+        this(symbolId, symbolName, probability, false);
     }
 
-    public Symbol(final int id,
-                  final String name,
+    public Symbol(final int symbolId,
+                  final String symbolName,
                   final boolean isWild){
 
-        this(id, name, BigDecimal.ZERO, isWild);
+        this(symbolId, symbolName, BigDecimal.ZERO, isWild);
     }
 
-    public Symbol(final int id,
-                  final String name){
+    public Symbol(final int symbolId,
+                  final String symbolName){
 
-        this(id, name, false);
+        this(symbolId, symbolName, false);
     }
 
-    public Symbol(final int id){
+    public Symbol(final int symbolId){
 
-        this(id, String.valueOf(id));
+        this(symbolId, String.valueOf(symbolId));
     }
 
     // manually define this here as we need to ignore from serialization to the JSON output
@@ -129,12 +129,12 @@ public class Symbol {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Symbol symbol = (Symbol) o;
-        return id == symbol.id;
+        return symbolId == symbol.symbolId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(symbolId);
     }
 
 

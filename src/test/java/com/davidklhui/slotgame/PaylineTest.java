@@ -4,15 +4,24 @@ import com.davidklhui.slotgame.exception.PaylineException;
 import com.davidklhui.slotgame.model.Payline;
 import com.davidklhui.slotgame.model.PaylineCoordinate;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestPropertySource("/application-test.properties")
 @SpringBootTest(classes = SlotGameApplication.class)
+@Transactional
 class PaylineTest {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Test
     void paylineCoordinateTest(){
