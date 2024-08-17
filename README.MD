@@ -2,6 +2,7 @@
 
 Currently support single game by providing slot configuration and the payout definition to perform a single game simulation
 
+
 This sample slot game using 3 reels x 2 rows as a demo
 In the general design this can be extended
 
