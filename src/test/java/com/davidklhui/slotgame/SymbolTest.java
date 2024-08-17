@@ -26,10 +26,10 @@ class SymbolTest {
         assertNotNull(symbol, "Symbol is not null");
 
         // symbol id is 1
-        assertEquals( 1, symbol.getId(),"Symbol id is correct");
+        assertEquals( 1, symbol.getSymbolId(),"Symbol id is correct");
 
         // symbol has name symbol_1
-        assertEquals("symbol_1", symbol.getName(), "Symbol name is correct");
+        assertEquals("symbol_1", symbol.getSymbolName(), "Symbol name is correct");
 
 
     }
