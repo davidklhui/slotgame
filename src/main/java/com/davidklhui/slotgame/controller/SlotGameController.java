@@ -23,7 +23,7 @@ public class SlotGameController {
 
     @PostMapping(value="/spin")
     public SlotSpinResult spin(@RequestBody SlotGameDefinition slotGameDefinition){
-        log.info("{}", slotGameDefinition);
+        log.debug("{}", slotGameDefinition);
         return slotGameService.spin(slotGameDefinition);
     }
 
