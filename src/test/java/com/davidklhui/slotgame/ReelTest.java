@@ -3,35 +3,58 @@ package com.davidklhui.slotgame;
 import com.davidklhui.slotgame.exception.ReelException;
 import com.davidklhui.slotgame.model.Reel;
 import com.davidklhui.slotgame.model.Symbol;
+import com.davidklhui.slotgame.model.SymbolProb;
+import com.davidklhui.slotgame.service.ISymbolService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestPropertySource("/application-dev.yml")
 @SpringBootTest(classes = SlotGameApplication.class)
+@Transactional
+@Slf4j
+@SqlGroup({
+        @Sql(scripts = "/insert_symbols.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
+        @Sql(scripts = "/delete_symbols.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
+})
 class ReelTest {
+
+    @Autowired
+    private ISymbolService symbolService;
 
     @Test
     void correctReelTest(){
 
-        Set<Symbol> symbols = new HashSet<>();
-        symbols.add(new Symbol(1, "a", 0.1, true));
-        symbols.add(new Symbol(2, "b", 0.9, true));
+        Symbol symbol1 = symbolService.findSymbolById(1).get();
+        Symbol symbol2 = symbolService.findSymbolById(2).get();
+
+        Set<SymbolProb> symbolProbSet = new Reel.SymbolMapBuilder()
+                                                        .put(symbol1, 0.1)
+                                                        .put(symbol2, 0.9)
+                                                        .build();
 
         assertDoesNotThrow(
-                ()-> new Reel(symbols),
+                ()-> new Reel(symbolProbSet),
                 "Correct Reel configuration"
         );
 
-        Reel reel = new Reel(symbols);
+        Reel reel = new Reel(symbolProbSet);
 
         // valid size
-        assertEquals(2, reel.getSymbols().size(), "Size is correct: 2");
+        assertEquals(2, reel.numberOfSymbols(), "Size is correct: 2");
 
         // correct total probability
         assertTrue((Boolean) ReflectionTestUtils.invokeMethod(reel, "isTotalProbabilitySumToOne"));
@@ -44,19 +67,20 @@ class ReelTest {
     @Test
     void symbolsSizeLessThan2Test(){
 
-        Set<Symbol> symbols = new HashSet<>();
-
+        Map<Symbol, BigDecimal> symbolProbSet = new HashMap<>();
         assertThrows(
                 ReelException.class,
-                ()-> new Reel(symbols),
+                ()-> new Reel(symbolProbSet),
                 "Given Symbol Set size < 2"
         );
 
-        symbols.add(new Symbol(1, "a", 0.1, true));
+
+        symbolProbSet.put(symbolService.findSymbolById(1).get(),
+                        BigDecimal.ONE);
 
         assertThrows(
                 ReelException.class,
-                ()-> new Reel(symbols),
+                ()-> new Reel(symbolProbSet),
                 "Given Symbol Set size < 2"
         );
     }
@@ -64,36 +88,64 @@ class ReelTest {
     @Test
     void symbolsTotalProbabilityIncorrectTest(){
 
+        Symbol symbol1 = symbolService.findSymbolById(1).get();
+        Symbol symbol2 = symbolService.findSymbolById(2).get();
+        Symbol symbol3 = symbolService.findSymbolById(3).get();
+        Symbol symbol4 = symbolService.findSymbolById(4).get();
+        Symbol symbol5 = symbolService.findSymbolById(5).get();
 
-        Set<Symbol> symbols = new HashSet<>();
+        Map<Symbol, BigDecimal> emptyMap = new HashMap<>();
 
         assertThrows(
                 ReelException.class,
-                ()-> new Reel(symbols),
+                ()-> new Reel(emptyMap),
                 "Given Symbol Set size < 2"
         );
 
-        symbols.add(new Symbol(1, "a", 0.1, true));
-        symbols.add(new Symbol(2, "a", 0.2, true));
+
+        final Set<SymbolProb> symbolProbSet1 = new Reel.SymbolMapBuilder()
+                        .put(symbol1, 0.1)
+                        .put(symbol2, 0.2)
+                        .build();
 
         assertThrows(
                 ReelException.class,
-                ()-> new Reel(symbols),
+                ()-> new Reel(symbolProbSet1),
                 "Total Probability is not 1"
         );
 
-        symbols.add(new Symbol(3, "b", 0.699999999, true));
-        assertDoesNotThrow(()-> new Reel(symbols), "Total Probability is slightly less than 1");
+        final Set<SymbolProb> symbolProbSet2 = new Reel.SymbolMapBuilder()
+                                                        .put(symbol1, 0.1)
+                                                        .put(symbol2, 0.2)
+                                                        .put(symbol3, 0.69999999999)
+                                                        .build();
+
+        assertDoesNotThrow(()-> new Reel(symbolProbSet2), "Total Probability is slightly less than 1");
 
         assertEquals(BigDecimal.ONE.setScale(9),
-                ReflectionTestUtils.invokeMethod(new Reel(symbols), "totalProbability"));
+                ReflectionTestUtils.invokeMethod(new Reel(symbolProbSet2), "totalProbability"));
 
-        symbols.add(new Symbol(4, "b", 0.000000001, true));
-        assertDoesNotThrow(()-> new Reel(symbols), "Total Probability is slightly less than 1");
 
-        symbols.add(new Symbol(5, "b", 0.000001, true));
+        final Set<SymbolProb> symbolProbSet3 = new Reel.SymbolMapBuilder()
+                                                    .put(symbol1, 0.1)
+                                                    .put(symbol2, 0.2)
+                                                    .put(symbol3, 0.69999999999)
+                                                    .put(symbol4, 0.00000000001)
+                                                    .build();
+
+        assertDoesNotThrow(()-> new Reel(symbolProbSet3), "Total Probability is slightly less than 1");
+
+
+
+        final Set<SymbolProb> symbolProbSet4 = new Reel.SymbolMapBuilder()
+                                                            .put(symbol1, 0.1)
+                                                            .put(symbol2, 0.2)
+                                                            .put(symbol3, 0.699999999)
+                                                            .put(symbol4, 0.000000001)
+                                                            .put(symbol5, 0.000001)
+                                                            .build();
         assertThrows(ReelException.class,
-                ()-> new Reel(symbols),
+                ()-> new Reel(symbolProbSet4),
                 "Total Probability exceeded 1 a lot");
 
     }
@@ -101,13 +153,20 @@ class ReelTest {
     @Test
     void simSizeTest(){
 
-        Set<Symbol> symbols = new HashSet<>();
 
-        symbols.add(new Symbol(1, "a", 0.1, true));
-        symbols.add(new Symbol(2, "a", 0.2, true));
-        symbols.add(new Symbol(3, "a", 0.7, true));
+        Symbol symbol1 = symbolService.findSymbolById(1).get();
+        Symbol symbol2 = symbolService.findSymbolById(2).get();
+        Symbol symbol3 = symbolService.findSymbolById(3).get();
 
-        Reel reel = new Reel(symbols);
+        Set<SymbolProb> symbolProbSet = new Reel.SymbolMapBuilder()
+                                                    .put(symbol1, 0.1)
+                                                    .put(symbol2, 0.2)
+                                                    .put(symbol3, 0.7)
+                                                    .build();
+
+
+
+        Reel reel = new Reel(symbolProbSet);
 
         assertEquals(1, reel.simulate(1).size(), "Simulate Outcome Size correct");
         assertEquals(4, reel.simulate(4).size(), "Simulate Outcome Size correct");

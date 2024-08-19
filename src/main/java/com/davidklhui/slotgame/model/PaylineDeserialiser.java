@@ -1,5 +1,6 @@
 package com.davidklhui.slotgame.model;
 
+import com.davidklhui.slotgame.exception.PaylineException;
 import com.davidklhui.slotgame.service.IPaylineService;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -27,7 +28,7 @@ public class PaylineDeserialiser extends JsonDeserializer<Payline> {
 
         final int id = node.get("paylineId").asInt();
 
-        return paylineService.findPaylineById(id);
-
+        return paylineService.findPaylineById(id)
+                .orElseThrow(()->new PaylineException(String.format("Payline not found, id=%d", id)));
     }
 }

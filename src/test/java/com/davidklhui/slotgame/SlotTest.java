@@ -10,49 +10,58 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest(classes = SlotGameApplication.class)
 class SlotTest {
-    
+
     private List<Reel> reels;
 
     @BeforeEach
     void preConfigReels(){
-        
+        Symbol symbol1 = new Symbol(1, "1", false);
+        Symbol symbol2 = new Symbol(2, "2", false);
+        Symbol symbol3 = new Symbol(3, "3", false);
+        Symbol symbol4 = new Symbol(4, "4", false);
+        Symbol symbol5 = new Symbol(5, "5", false);
+
         Reel reel1 = new Reel(
-                new HashSet<>(Arrays.asList(new Symbol(1, "1", 0.1, false),
-                        new Symbol(2, "2", 0.2, false),
-                        new Symbol(3, "3", 0.7, false))));
-        
+                Map.of(symbol1, BigDecimal.valueOf(0.1),
+                        symbol2, BigDecimal.valueOf(0.2),
+                        symbol3, BigDecimal.valueOf(0.6),
+                        symbol4, BigDecimal.valueOf(0.1))
+        );
+
         Reel reel2 = new Reel(
-                new HashSet<>(Arrays.asList(new Symbol(1, "1", 0.1, false),
-                        new Symbol(2, "2", 0.2, false),
-                        new Symbol(3, "3", 0.6, false),
-                        new Symbol(4, "4", 0.1, false))));
+                Map.of(symbol1, BigDecimal.valueOf(0.1),
+                        symbol2, BigDecimal.valueOf(0.2),
+                        symbol3, BigDecimal.valueOf(0.6),
+                        symbol4, BigDecimal.valueOf(0.1))
+        );
 
         Reel reel3 = new Reel(
-                new HashSet<>(Arrays.asList(new Symbol(1, "1", 0.1, false),
-                        new Symbol(2, "2", 0.9, false))));
+                Map.of(symbol1, BigDecimal.valueOf(0.1),
+                        symbol2, BigDecimal.valueOf(0.9))
+        );
 
         Reel reel4 = new Reel(
-                new HashSet<>(Arrays.asList(new Symbol(1, "1", 0.2, false),
-                        new Symbol(2, "2", 0.2, false),
-                        new Symbol(3, "3", 0.2, false),
-                        new Symbol(4, "4", 0.2, false),
-                        new Symbol(5, "5", 0.2, false))));
+                Map.of(symbol1, BigDecimal.valueOf(0.2),
+                        symbol2, BigDecimal.valueOf(0.2),
+                        symbol3, BigDecimal.valueOf(0.2),
+                        symbol4, BigDecimal.valueOf(0.2),
+                        symbol5, BigDecimal.valueOf(0.2))
+        );
 
         Reel reel5 = new Reel(
-                new HashSet<>(Arrays.asList(new Symbol(1, "1", 0.002, false),
-                        new Symbol(2, "2", 0.001, false),
-                        new Symbol(3, "3", 0.001, false),
-                        new Symbol(4, "4", 0.996, false))));
+                Map.of(symbol1, BigDecimal.valueOf(0.002),
+                        symbol2, BigDecimal.valueOf(0.001),
+                        symbol3, BigDecimal.valueOf(0.001),
+                        symbol4, BigDecimal.valueOf(0.996))
+        );
 
         reels = Arrays.asList(reel1, reel2, reel3, reel4, reel5);
 
@@ -92,7 +101,7 @@ class SlotTest {
         log.debug("Slot simulation outcome: {}", outcomes);
 
     }
-    
+
 
     @Test
     void incorrectSlotConfgTest(){
@@ -138,5 +147,5 @@ class SlotTest {
 
 
     }
-    
+
 }

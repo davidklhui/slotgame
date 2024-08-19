@@ -1,5 +1,6 @@
 package com.davidklhui.slotgame.controller;
 
+import com.davidklhui.slotgame.exception.PaylineException;
 import com.davidklhui.slotgame.model.Payline;
 import com.davidklhui.slotgame.service.IPaylineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/payline")
@@ -28,7 +30,13 @@ public class PaylineController {
 
     @GetMapping("/get/{paylineId}")
     public Payline getPayline(@PathVariable("paylineId") final int paylineId){
-        return paylineService.findPaylineById(paylineId);
+        Optional<Payline> paylineOptional = paylineService.findPaylineById(paylineId);
+        if(paylineOptional.isPresent()){
+            return paylineOptional.get();
+        } else {
+            throw new PaylineException(
+                    String.format("Payline not found. Given id = %d", paylineId));
+        }
     }
 
 }
