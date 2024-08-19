@@ -78,7 +78,7 @@ class PayoutTest {
         when(slotMock.spin()).thenReturn(outcomes);
 
         final Optional<Payline> paylineOptional = paylineService.findPaylineById(1);
-        assertTrue(paylineOptional.isPresent(), "Payline 1 present");
+        assertTrue(paylineOptional.isPresent(), "Payline 1 should present");
 
         final Payline payline = paylineOptional.get();
 
@@ -111,7 +111,7 @@ class PayoutTest {
         when(slotMock.spin()).thenReturn(outcomes);
 
         Optional<Payline> paylineOptional = paylineService.findPaylineById(1);
-        assertTrue(paylineOptional.isPresent(), "Payline 1 exists");
+        assertTrue(paylineOptional.isPresent(), "Payline 1 should exist");
 
         Payline payline = paylineOptional.get();
 
@@ -128,7 +128,7 @@ class PayoutTest {
 
 
         paylineOptional = paylineService.findPaylineById(2);
-        assertTrue(paylineOptional.isPresent(), "Payline 2 exists");
+        assertTrue(paylineOptional.isPresent(), "Payline 2 should exist");
         payline = paylineOptional.get();
 
         payoutDefinition = new PayoutDefinition(
@@ -235,7 +235,7 @@ class PayoutTest {
         int payoutListSize = payoutDefinitionService.listPayoutDefinitions().size();
 
         // 11 defined paylines * 5 different regular symbols
-        assertEquals(55, payoutListSize, "Correct Payout List Size");
+        assertEquals(55, payoutListSize, "Payout List Size should equal 55");
 
         int symbolListSize = symbolService.listSymbols()
                 .stream().filter(symbol-> ! symbol.isWild()).toList().size();

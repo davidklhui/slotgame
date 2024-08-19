@@ -28,4 +28,22 @@ public class SymbolServiceImpl implements ISymbolService {
     public Optional<Symbol> findSymbolById(int symbolId) {
         return symbolRepository.findById(symbolId);
     }
+
+    @Override
+    public Symbol saveSymbol(Symbol symbol) {
+
+        return symbolRepository.save(symbol);
+    }
+
+    @Override
+    public boolean deleteSymbol(int symbolId) {
+
+        Optional<Symbol> symbolOptional = symbolRepository.findById(symbolId);
+        if(symbolOptional.isEmpty()){
+            return false;
+        } else{
+            symbolRepository.deleteById(symbolId);
+            return true;
+        }
+    }
 }

@@ -4,10 +4,7 @@ import com.davidklhui.slotgame.exception.SymbolException;
 import com.davidklhui.slotgame.model.Symbol;
 import com.davidklhui.slotgame.service.ISymbolService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,4 +40,15 @@ public class SymbolController {
         );
     }
 
+    @PostMapping("/save")
+    public Symbol saveSymbol(@RequestBody Symbol symbol){
+
+        return symbolService.saveSymbol(symbol);
+    }
+
+    @DeleteMapping("/delete/{symbolId}")
+    public boolean deleteSymbol(@PathVariable("symbolId") final int symbolId){
+
+        return symbolService.deleteSymbol(symbolId);
+    }
 }
