@@ -1,2 +1,2 @@
 
-DELETE FROM symbol;
+DELETE FROM symbol WHERE 1=1;

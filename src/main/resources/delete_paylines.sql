@@ -1,4 +1,3 @@
 
-
-DELETE FROM payline_coordinates;
-DELETE FROM payline;
+DELETE FROM payline_coordinates WHERE 1=1;
+DELETE FROM payline WHERE 1=1;
