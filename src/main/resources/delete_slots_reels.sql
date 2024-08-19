@@ -1,0 +1,7 @@
+
+
+DELETE FROM reel_symbol WHERE 1=1;
+
+DELETE FROM reel WHERE 1=1;
+
+DELETE FROM slot WHERE 1=1;

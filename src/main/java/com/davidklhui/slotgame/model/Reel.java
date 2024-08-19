@@ -2,8 +2,12 @@ package com.davidklhui.slotgame.model;
 
 import com.davidklhui.slotgame.exception.ReelException;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.Data;
+
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
@@ -21,7 +25,10 @@ import java.util.stream.Stream;
  *
  */
 @ToString
-@Getter
+@Entity
+@Table(name = "reel")
+@Data
+@NoArgsConstructor
 public class Reel {
 
     // used to set scale for the BigDecimal
@@ -30,10 +37,21 @@ public class Reel {
     // used to check if the total probability is just slightly differs from 1
     private static final BigDecimal TOLERANCE = BigDecimal.valueOf(1e-9).setScale(SCALE);
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reel_id")
+    private int id;
+
     /*
         defined the symbol-probability pair
      */
-    private final Set<SymbolProb> symbolProbSet;
+    @OneToMany(mappedBy = "reel", orphanRemoval = true, cascade = CascadeType.ALL)
+    private Set<SymbolProb> symbolProbSet;
+
+    @ManyToOne
+    @JoinColumn(name = "slot_id", nullable = false)
+    @JsonIgnore
+    private Slot slot;
 
     @JsonCreator
     public Reel(@JsonProperty("symbolProbSet") final Set<SymbolProb> symbolProbSet){

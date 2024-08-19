@@ -3,7 +3,9 @@ package com.davidklhui.slotgame.model;
 import com.davidklhui.slotgame.exception.SlotException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -16,11 +18,22 @@ import java.util.stream.Collectors;
     2. Number of Rows
  */
 @ToString
-@Getter
+@Data
+@Entity
+@Table(name = "slot")
+@NoArgsConstructor
 public class Slot {
 
-    private final List<Reel> reels;
-    private final int numberOfRows;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "slot_id")
+    private int slotId;
+
+    @Column(name = "number_of_rows")
+    private int numberOfRows;
+
+    @OneToMany(mappedBy = "slot", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Reel> reels;
 
 
     @JsonCreator
@@ -45,11 +58,6 @@ public class Slot {
 
     }
 
-
-    // get the number of columns, aka number of reels
-    public int getNumberOfColumns(){
-        return getNumberOfReels();
-    }
 
     // get the number of reels
     public int getNumberOfReels(){
