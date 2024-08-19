@@ -1,40 +1,35 @@
 package com.davidklhui.slotgame.model;
 
+import com.davidklhui.slotgame.exception.SymbolException;
+import com.davidklhui.slotgame.service.ISymbolService;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 public class SymbolDeserializer extends JsonDeserializer<Symbol> {
+
+    private final ISymbolService symbolService;
+
+    @Autowired
+    public SymbolDeserializer(final ISymbolService symbolService){
+        this.symbolService = symbolService;
+    }
+
     @Override
     public Symbol deserialize(JsonParser jp, DeserializationContext ctx) throws IOException {
         ObjectNode node = jp.getCodec().readTree(jp);
 
-        final int id = node.get("id").asInt();
-        final String name;
-        final boolean isWild;
+        final int symbolId = node.get("symbolId").asInt();
 
-        // id is mandatory, rest may be ignored from the rest api
-        if(node.has("name")) {
-            name = node.get("name").asText();
-        } else {
-            name = String.valueOf(id);
-        }
-
-        if(node.has("isWild")) {
-            isWild = node.get("isWild").asBoolean();
-        } else {
-            isWild = false;
-        }
-
-        if(node.has("probability")) {
-            final double probability = node.get("probability").asDouble();
-            return new Symbol(id, name, probability, isWild);
-        } else {
-            return new Symbol(id, name, isWild);
-        }
-
+        return symbolService.findSymbolById(symbolId)
+                .orElseThrow(()-> new SymbolException(
+                        String.format("Symbol not found, id=%d", symbolId)
+                ));
     }
 }

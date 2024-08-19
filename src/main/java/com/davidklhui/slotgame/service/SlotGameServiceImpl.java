@@ -3,6 +3,7 @@ package com.davidklhui.slotgame.service;
 import com.davidklhui.slotgame.exception.PaylineException;
 import com.davidklhui.slotgame.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,13 @@ import java.util.List;
 @Slf4j
 @Service
 public class SlotGameServiceImpl implements ISlotGameService {
+
+    private final IPayoutDefinitionService payoutDefinitionService;
+
+    @Autowired
+    public SlotGameServiceImpl(final IPayoutDefinitionService payoutDefinitionService) {
+        this.payoutDefinitionService = payoutDefinitionService;
+    }
 
     /*
         Given the slot game definition, then perform a spin and return the result:
@@ -25,6 +33,16 @@ public class SlotGameServiceImpl implements ISlotGameService {
         final List<List<Symbol>> outcomes = slot.spin();
 
         return slotSpinResult(outcomes, payoutDefinitions);
+    }
+
+    @Override
+    public SlotSpinResult spin(final Slot slot) {
+
+        final List<PayoutDefinition> payoutDefinitions = payoutDefinitionService.listPayoutDefinitions();
+        final List<List<Symbol>> outcomes = slot.spin();
+
+        return slotSpinResult(outcomes, payoutDefinitions);
+
     }
 
     /*
@@ -53,7 +71,7 @@ public class SlotGameServiceImpl implements ISlotGameService {
                                                     final PayoutDefinition payoutDefinition){
 
         final int payoutAmount = calculatePayout(
-                                extractOutcomeSymbolByCoordinates(outcomes, payoutDefinition.getPayline().getPaylineCoordinates()),
+                                extractOutcomeSymbolByCoordinates(outcomes, payoutDefinition.getPayline().getCoordinates()),
                                 payoutDefinition);
 
         return new SlotSpinPayout(payoutDefinition, payoutAmount);
@@ -63,7 +81,7 @@ public class SlotGameServiceImpl implements ISlotGameService {
         helper function, extract the symbols from the given outcomes by the coordinates list
      */
     private List<Symbol> extractOutcomeSymbolByCoordinates(final List<List<Symbol>> outcomes,
-                                                            final List<PaylineCoordinate> coordinates){
+                                                            final List<Coordinate> coordinates){
 
         return coordinates.stream()
                 .map(coordinate-> {

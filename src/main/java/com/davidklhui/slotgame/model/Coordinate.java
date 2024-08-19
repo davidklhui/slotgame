@@ -2,8 +2,12 @@ package com.davidklhui.slotgame.model;
 
 import com.davidklhui.slotgame.exception.PaylineException;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Objects;
 
@@ -14,16 +18,32 @@ import java.util.Objects;
     two coordinates c1, c2 are treated equal
     iff c1.reelIndex == c2.reelIndex and c1.rowIndex == c2.rowIndex
  */
-@Getter
-public class PaylineCoordinate {
 
-    private final int reelIndex;
-    private final int rowIndex;
+@Entity
+@Table(name = "coordinate",
+        uniqueConstraints = {
+            @UniqueConstraint(name = "UK_Coordinate_reel_row", columnNames = {"reel_index", "row_index"})})
+@Data
+@NoArgsConstructor
+@ToString
+public class Coordinate {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "coordinate_id")
+    @JsonIgnore
+    private int coordinateId;
+
+    @Column(name = "reel_index")
+    private int reelIndex;
+
+    @Column(name = "row_index")
+    private int rowIndex;
 
     // can also use of(reelIndex, rowIndex) to construct the payline coordinate
     @JsonCreator
-    public PaylineCoordinate(@JsonProperty("reelIndex") final int reelIndex,
-                             @JsonProperty("rowIndex") final int rowIndex) {
+    public Coordinate(@JsonProperty("reelIndex") final int reelIndex,
+                      @JsonProperty("rowIndex") final int rowIndex) {
 
         if (reelIndex < 0 || rowIndex < 0) {
             throw new PaylineException(
@@ -35,10 +55,10 @@ public class PaylineCoordinate {
 
     }
 
-    public static PaylineCoordinate of(final int reelIndex,
-                                       final int rowIndex) {
+    public static Coordinate of(final int reelIndex,
+                                final int rowIndex) {
 
-        return new PaylineCoordinate(reelIndex, rowIndex);
+        return new Coordinate(reelIndex, rowIndex);
     }
 
     /*
@@ -48,7 +68,7 @@ public class PaylineCoordinate {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PaylineCoordinate that = (PaylineCoordinate) o;
+        Coordinate that = (Coordinate) o;
         return reelIndex == that.reelIndex && rowIndex == that.rowIndex;
     }
 

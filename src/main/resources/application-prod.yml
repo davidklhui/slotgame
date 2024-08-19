@@ -1,0 +1,3 @@
+spring.application.name=slotgame
+
+# later setup for AWS RDS and parameter store

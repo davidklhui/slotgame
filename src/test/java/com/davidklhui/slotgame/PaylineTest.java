@@ -1,122 +1,103 @@
 package com.davidklhui.slotgame;
 
-import com.davidklhui.slotgame.exception.PaylineException;
 import com.davidklhui.slotgame.model.Payline;
-import com.davidklhui.slotgame.model.PaylineCoordinate;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.junit.jupiter.api.Test;
+import com.davidklhui.slotgame.service.IPaylineService;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@TestPropertySource("/application-test.properties")
+@AutoConfigureMockMvc
+@TestPropertySource("/application-dev.yml")
 @SpringBootTest(classes = SlotGameApplication.class)
 @Transactional
+@Slf4j
+@SqlGroup({
+        @Sql(scripts = "/insert_coordinates.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
+        @Sql(scripts = "/insert_paylines.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
+        @Sql(scripts = "/delete_paylines.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS),
+        @Sql(scripts = "/delete_coordinates.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
+})
 class PaylineTest {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    /**
+        Involved tests:
+        A: Service Functionality
+            1. check if the payline list size is the same as what we've inserted
+            2. check if getting payline id = 1 success, but 0 failed
+        B: Rest API
+            1. test endpoint GET /payline/list
+            2. test endpoint GET /payline/get/{id}
+     */
 
+
+
+    @Autowired
+    private IPaylineService paylineService;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    /*
+        A: Service Functionality
+
+     */
     @Test
-    void paylineCoordinateTest(){
+    void checkPaylineCorrectListSizeTest(){
 
-        assertThrows(
-                PaylineException.class, ()-> PaylineCoordinate.of(1,-1),
-                "Coordinate cannot have negative"
-        );
-
-        assertThrows(
-                PaylineException.class, ()-> PaylineCoordinate.of(-1,2),
-                "Coordinate cannot have negative"
-        );
-
-        assertThrows(
-                PaylineException.class, ()-> PaylineCoordinate.of(-3,-3),
-                "Coordinate cannot have negative"
-        );
-
-        assertDoesNotThrow(
-                ()-> PaylineCoordinate.of(0,0),
-                "Coordinate are non negative, accept (0,0)"
-        );
-
-        assertDoesNotThrow(
-                ()-> PaylineCoordinate.of(0,4),
-                "Coordinate are non negative"
-        );
-
-        assertDoesNotThrow(
-                ()-> PaylineCoordinate.of(5,0),
-                "Coordinate are non negative"
-        );
-
-        assertDoesNotThrow(
-                ()-> PaylineCoordinate.of(5,4),
-                "Coordinate are non negative"
-        );
+        final List<Payline> paylineList = paylineService.listPaylines();
+        assertEquals(11, paylineList.size(), "Correct Payline list size");
     }
 
     @Test
-    void checkIfTwoCoordinatesAreEqualTest(){
+    void checkGetPaylineByIdTest(){
 
-        PaylineCoordinate coordinate1 = PaylineCoordinate.of(1,2);
-        PaylineCoordinate coordinate2 = PaylineCoordinate.of(1,2);
-        PaylineCoordinate coordinate3 = PaylineCoordinate.of(2,2);
+        final Optional<Payline> existPayline = paylineService.findPaylineById(1);
+        assertTrue(existPayline.isPresent(), "Payline id = 1 exists");
 
-        assertEquals(coordinate1, coordinate2, "Coordinates are equal");
-        assertNotEquals(coordinate1, coordinate3, "Coordinates are not equal");
+        final Optional<Payline> notExistsPayline = paylineService.findPaylineById(0);
+        assertTrue(notExistsPayline.isEmpty(), "Payline id = 0 not exists");
+
     }
 
+    /*
+        B: Rest API
+     */
+    @Test
+    void listPaylinesTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/payline/list"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(11)));
+    }
 
     @Test
-    void validPaylineTest(){
+    void getPaylineByIdTest() throws Exception {
 
-        List<PaylineCoordinate> paylineCoordinates = List.of(
-                PaylineCoordinate.of(0, 0),
-                PaylineCoordinate.of(1, 0),
-                PaylineCoordinate.of(2, 0),
-                PaylineCoordinate.of(3, 0),
-                PaylineCoordinate.of(4, 0)
-        );
+        mockMvc.perform(MockMvcRequestBuilders.get("/payline/get/{id}", 1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.paylineId", is(1)))
+                .andExpect(jsonPath("$.paylineName", is("horizontal line 1")))
+                .andExpect(jsonPath("$.coordinates", hasSize(5)));
 
-        assertDoesNotThrow(
-                ()-> new Payline(1, "horizontal line 0", paylineCoordinates),
-                "Not throw exception, no duplication"
-        );
-
-        Payline payline = new Payline(1, "horizontal line 0", paylineCoordinates);
-
-        assertEquals(5, payline.getPaylineCoordinates().size(), "Correct size");
-
+        mockMvc.perform(MockMvcRequestBuilders.get("/payline/{id}", 0))
+                .andExpect(status().is4xxClientError());
     }
-
-
-    @Test
-    void invalidPaylineDuplicatedCoordinatesTest(){
-
-        List<PaylineCoordinate> paylineCoordinates = List.of(
-                PaylineCoordinate.of(0, 0),
-                PaylineCoordinate.of(1, 0),
-                PaylineCoordinate.of(2, 0),
-                PaylineCoordinate.of(1, 0),
-                PaylineCoordinate.of(4, 0)
-        );
-
-        assertThrows(
-                PaylineException.class,
-                ()-> new Payline(1, "horizontal line 0", paylineCoordinates),
-                "Throw exception because coordinate duplicated (1,0) occurred twice"
-        );
-
-    }
-
-
-
-
 }

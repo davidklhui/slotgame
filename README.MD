@@ -3,82 +3,145 @@
 Currently support single game by providing slot configuration and the payout definition to perform a single game simulation
 
 
-This sample slot game using 3 reels x 2 rows as a demo
+This sample slot game using 5 reels x 3 rows as a demo
 In the general design this can be extended
+
+To replicate this project, run the application in profile = test, 
+and pass both spring.datasource.username and spring.datasource.password
 
 the sample payload is:
 
 ```json
 {
-  "cost": 10,
-  "slot": {
-    "numberOfRows": 2,
-    "reels": [
-      {"symbols": [
-        {"id": 1, "name": "apple", "probability": 0.9},
-        {"id": 2, "name": "orange", "probability": 0.05},
-        {"id": 3, "name": "lemon", "probability": 0.05}
-      ]},
-      {"symbols": [
-        {"id": 1, "name": "apple", "probability": 0.1},
-        {"id": 2, "name": "orange", "probability": 0.1},
-        {"id": 3, "name": "lemon", "probability": 0.8}
-      ]},
-      {"symbols": [
-        {"id": 1, "name": "apple", "probability": 0.75},
-        {"id": 2, "name": "orange", "probability": 0.15},
-        {"id": 3, "name": "lemon", "probability": 0.1}
-      ]}
-    ]
-  },
-  "payoutDefinitions": [
+  "numberOfRows": 3,
+  "reels": [
     {
-      "payoutId": 1,
-      "payoutAmount": 10,
-      "payline": {
-        "paylineId": 1
-      },
-      "symbol": {"id": 1}
+      "symbolProbSet": [
+        {
+          "symbol": {
+            "symbolId": 1
+          },
+          "probability": 0.9
+        },
+        {
+          "symbol": {
+            "symbolId": 2
+          },
+          "probability": 0.05
+        },
+        {
+          "symbol": {
+            "symbolId": 3
+          },
+          "probability": 0.05
+        }
+      ]
     },
     {
-      "payoutId": 2,
-      "payoutAmount": 100,
-      "payline": {
-        "paylineId": 2
-      },
-      "symbol": {"id": 2}
+      "symbolProbSet": [
+        {
+          "symbol": {
+            "symbolId": 1
+          },
+          "probability": 0.8
+        },
+        {
+          "symbol": {
+            "symbolId": 2
+          },
+          "probability": 0.1
+        },
+        {
+          "symbol": {
+            "symbolId": 3
+          },
+          "probability": 0.1
+        }
+      ]
     },
     {
-      "payoutId": 3,
-      "payoutAmount": 1000,
-      "payline": {
-        "paylineId": 3
-      },
-      "symbol": {"id": 3}
+      "symbolProbSet": [
+        {
+          "symbol": {
+            "symbolId": 1
+          },
+          "probability": 0.7
+        },
+        {
+          "symbol": {
+            "symbolId": 2
+          },
+          "probability": 0.2
+        },
+        {
+          "symbol": {
+            "symbolId": 3
+          },
+          "probability": 0.05
+        },
+        {
+          "symbol": {
+            "symbolId": 4
+          },
+          "probability": 0.05
+        }
+      ]
     },
     {
-      "payoutId": 4,
-      "payoutAmount": 10000,
-      "payline": {
-        "paylineId": 4
-      },
-      "symbol": {"id": 1}
+      "symbolProbSet": [
+        {
+          "symbol": {
+            "symbolId": 1
+          },
+          "probability": 0.7
+        },
+        {
+          "symbol": {
+            "symbolId": 2
+          },
+          "probability": 0.1
+        },
+        {
+          "symbol": {
+            "symbolId": 3
+          },
+          "probability": 0.1
+        },
+        {
+          "symbol": {
+            "symbolId": 4
+          },
+          "probability": 0.05
+        },
+        {
+          "symbol": {
+            "symbolId": 5
+          },
+          "probability": 0.05
+        }
+      ]
     },
     {
-      "payoutId": 5,
-      "payoutAmount": 20,
-      "payline": {
-        "paylineId": 2
-      },
-      "symbol": {"id": 2}
-    },
-    {
-      "payoutId": 6,
-      "payoutAmount": 30,
-      "payline": {
-        "paylineId": 3
-      },
-      "symbols": [{"id": 1}, {"id": 3}, {"id": 1}]
+      "symbolProbSet": [
+        {
+          "symbol": {
+            "symbolId": 1
+          },
+          "probability": 0.9
+        },
+        {
+          "symbol": {
+            "symbolId": 2
+          },
+          "probability": 0.05
+        },
+        {
+          "symbol": {
+            "symbolId": 3
+          },
+          "probability": 0.05
+        }
+      ]
     }
   ]
 }
@@ -90,37 +153,86 @@ And the sample result is (Note that you may have different result because of the
   "spinOutcomes": [
     [
       {
-        "id": 1,
-        "name": "apple",
+        "symbolId": 1,
+        "symbolName": "Apple",
         "wild": false
       },
       {
-        "id": 1,
-        "name": "apple",
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      },
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
         "wild": false
       }
     ],
     [
       {
-        "id": 1,
-        "name": "apple",
+        "symbolId": 1,
+        "symbolName": "Apple",
         "wild": false
       },
       {
-        "id": 3,
-        "name": "lemon",
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      },
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
         "wild": false
       }
     ],
     [
       {
-        "id": 2,
-        "name": "orange",
+        "symbolId": 1,
+        "symbolName": "Apple",
         "wild": false
       },
       {
-        "id": 1,
-        "name": "apple",
+        "symbolId": 2,
+        "symbolName": "Lemon",
+        "wild": false
+      },
+      {
+        "symbolId": 3,
+        "symbolName": "Mango",
+        "wild": false
+      }
+    ],
+    [
+      {
+        "symbolId": 4,
+        "symbolName": "Pizza",
+        "wild": false
+      },
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      },
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      }
+    ],
+    [
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      },
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      },
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
         "wild": false
       }
     ]
@@ -128,48 +240,186 @@ And the sample result is (Note that you may have different result because of the
   "slotSpinPayouts": [
     {
       "payoutDefinition": {
-        "payoutId": 4,
+        "payoutId": 5,
         "payline": {
-          "paylineId": 4,
+          "paylineId": 5,
           "paylineName": "inverted v shape",
-          "paylineCoordinates": [
+          "coordinates": [
             {
               "reelIndex": 0,
-              "rowIndex": 1
+              "rowIndex": 2
             },
             {
               "reelIndex": 1,
-              "rowIndex": 0
+              "rowIndex": 1
             },
             {
               "reelIndex": 2,
+              "rowIndex": 0
+            },
+            {
+              "reelIndex": 3,
               "rowIndex": 1
+            },
+            {
+              "reelIndex": 4,
+              "rowIndex": 2
             }
           ]
         },
         "symbols": [
           {
-            "id": 1,
-            "name": "1",
+            "symbolId": 1,
+            "symbolName": "Apple",
             "wild": false
           },
           {
-            "id": 1,
-            "name": "1",
+            "symbolId": 1,
+            "symbolName": "Apple",
             "wild": false
           },
           {
-            "id": 1,
-            "name": "1",
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
             "wild": false
           }
         ],
-        "payoutAmount": 10000
+        "payoutAmount": 3
       },
-      "payoutAmount": 10000
+      "payoutAmount": 3
+    },
+    {
+      "payoutDefinition": {
+        "payoutId": 9,
+        "payline": {
+          "paylineId": 9,
+          "paylineName": "w shape 1",
+          "coordinates": [
+            {
+              "reelIndex": 0,
+              "rowIndex": 0
+            },
+            {
+              "reelIndex": 1,
+              "rowIndex": 1
+            },
+            {
+              "reelIndex": 2,
+              "rowIndex": 0
+            },
+            {
+              "reelIndex": 3,
+              "rowIndex": 1
+            },
+            {
+              "reelIndex": 4,
+              "rowIndex": 0
+            }
+          ]
+        },
+        "symbols": [
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          }
+        ],
+        "payoutAmount": 3
+      },
+      "payoutAmount": 3
+    },
+    {
+      "payoutDefinition": {
+        "payoutId": 11,
+        "payline": {
+          "paylineId": 11,
+          "paylineName": "w shape 3",
+          "coordinates": [
+            {
+              "reelIndex": 0,
+              "rowIndex": 0
+            },
+            {
+              "reelIndex": 1,
+              "rowIndex": 2
+            },
+            {
+              "reelIndex": 2,
+              "rowIndex": 0
+            },
+            {
+              "reelIndex": 3,
+              "rowIndex": 2
+            },
+            {
+              "reelIndex": 4,
+              "rowIndex": 0
+            }
+          ]
+        },
+        "symbols": [
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          },
+          {
+            "symbolId": 1,
+            "symbolName": "Apple",
+            "wild": false
+          }
+        ],
+        "payoutAmount": 3
+      },
+      "payoutAmount": 3
     }
   ],
-  "spinPayout": 10000
+  "spinPayout": 9
 }
 ```
 
@@ -180,77 +430,291 @@ Payline configurations check the following endpoint (currently are manual pre-de
 and the results:
 ```json
 [
-    {
-        "paylineId": 1,
-        "paylineName": "horizontal line 1",
-        "paylineCoordinates": [
-            {
-                "reelIndex": 0,
-                "rowIndex": 0
-            },
-            {
-                "reelIndex": 1,
-                "rowIndex": 0
-            },
-            {
-                "reelIndex": 2,
-                "rowIndex": 0
-            }
-        ]
-    },
-    {
-        "paylineId": 2,
-        "paylineName": "horizontal line 2",
-        "paylineCoordinates": [
-            {
-                "reelIndex": 0,
-                "rowIndex": 1
-            },
-            {
-                "reelIndex": 1,
-                "rowIndex": 1
-            },
-            {
-                "reelIndex": 2,
-                "rowIndex": 1
-            }
-        ]
-    },
-    {
-        "paylineId": 3,
-        "paylineName": "v shape",
-        "paylineCoordinates": [
-            {
-                "reelIndex": 0,
-                "rowIndex": 0
-            },
-            {
-                "reelIndex": 1,
-                "rowIndex": 1
-            },
-            {
-                "reelIndex": 2,
-                "rowIndex": 0
-            }
-        ]
-    },
-    {
-        "paylineId": 4,
-        "paylineName": "inverted v shape",
-        "paylineCoordinates": [
-            {
-                "reelIndex": 0,
-                "rowIndex": 1
-            },
-            {
-                "reelIndex": 1,
-                "rowIndex": 0
-            },
-            {
-                "reelIndex": 2,
-                "rowIndex": 1
-            }
-        ]
-    }
+  {
+    "paylineId": 1,
+    "paylineName": "horizontal line 1",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 0
+      }
+    ]
+  },
+  {
+    "paylineId": 2,
+    "paylineName": "horizontal line 2",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 1
+      }
+    ]
+  },
+  {
+    "paylineId": 3,
+    "paylineName": "horizontal line 3",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 2
+      }
+    ]
+  },
+  {
+    "paylineId": 4,
+    "paylineName": "v shape",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 0
+      }
+    ]
+  },
+  {
+    "paylineId": 5,
+    "paylineName": "inverted v shape",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 2
+      }
+    ]
+  },
+  {
+    "paylineId": 6,
+    "paylineName": "m shape 1",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 1
+      }
+    ]
+  },
+  {
+    "paylineId": 7,
+    "paylineName": "m shape 2",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 2
+      }
+    ]
+  },
+  {
+    "paylineId": 8,
+    "paylineName": "m shape 3",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 2
+      }
+    ]
+  },
+  {
+    "paylineId": 9,
+    "paylineName": "w shape 1",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 0
+      }
+    ]
+  },
+  {
+    "paylineId": 10,
+    "paylineName": "w shape 2",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 1
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 1
+      }
+    ]
+  },
+  {
+    "paylineId": 11,
+    "paylineName": "w shape 3",
+    "coordinates": [
+      {
+        "reelIndex": 0,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 1,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 2,
+        "rowIndex": 0
+      },
+      {
+        "reelIndex": 3,
+        "rowIndex": 2
+      },
+      {
+        "reelIndex": 4,
+        "rowIndex": 0
+      }
+    ]
+  }
 ]
 ```

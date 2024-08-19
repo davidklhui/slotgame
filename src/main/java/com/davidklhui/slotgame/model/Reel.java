@@ -9,7 +9,9 @@ import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -26,20 +28,66 @@ public class Reel {
     private static final int SCALE = 9;
 
     // used to check if the total probability is just slightly differs from 1
-    private static final BigDecimal TOLERANCE = BigDecimal.valueOf(1e-9);
+    private static final BigDecimal TOLERANCE = BigDecimal.valueOf(1e-9).setScale(SCALE);
 
-    private final Set<Symbol> symbols;
+    /*
+        defined the symbol-probability pair
+     */
+    private final Set<SymbolProb> symbolProbSet;
 
     @JsonCreator
-    public Reel(@JsonProperty("symbols") final Set<Symbol> symbols){
-        this.symbols = symbols;
+    public Reel(@JsonProperty("symbolProbSet") final Set<SymbolProb> symbolProbSet){
+
+        this.symbolProbSet = symbolProbSet;
 
         if(! isValidReelSize()){
             throw new ReelException("Symbols set is invalid, either null or having size < 2");
         }
 
         adjustProbabilities();
+    }
 
+    public Reel(final Map<Symbol, BigDecimal> symbolProbMap){
+
+        this(symbolProbMap.entrySet()
+                .stream()
+                .map(entry-> new SymbolProb(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toSet()));
+
+    }
+
+    /*
+        helper class to handle the map to accept BigDecimal or Double without worrying about the scale issue
+     */
+    public static class SymbolMapBuilder {
+        private Map<Symbol, BigDecimal> symbols = new HashMap<>();
+
+        public SymbolMapBuilder put(final Symbol symbol, final BigDecimal probability){
+            this.symbols.put(symbol, probability.setScale(SCALE, RoundingMode.HALF_UP));
+            return this;
+        }
+
+        public SymbolMapBuilder put(final Symbol symbol, final Double probability){
+            return put(symbol, BigDecimal.valueOf(probability));
+        }
+
+        public Set<SymbolProb> build(){
+            final Set<SymbolProb> symbolProbSet = symbols.entrySet()
+                    .stream()
+                    .map(entry-> new SymbolProb(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toSet());
+
+            // clear existing put data to avoid further usage
+            this.symbols.clear();
+
+            return symbolProbSet;
+        }
+
+
+    }
+
+    public int numberOfSymbols(){
+        return symbolProbSet.size();
     }
 
     public List<Symbol> simulate(final int size){
@@ -56,8 +104,8 @@ public class Reel {
 
     // convert to math3 Pair for sampling
     private List<Pair<Symbol, Double>> symbolProbabilityPair(){
-        return this.symbols.stream()
-                .map(symbol-> new Pair<>(symbol, symbol.getProbability().doubleValue()))
+        return this.symbolProbSet.stream()
+                .map(symbolProb-> new Pair<>(symbolProb.getSymbol(), symbolProb.getProbability().doubleValue()))
                 .toList();
     }
 
@@ -78,7 +126,7 @@ public class Reel {
 
                 // extract one symbol from the reel symbols
                 // noted that this must not be null, as construction of symbols must have size >= 2
-                final Symbol selectedSymbol = symbols.iterator().next();
+                final SymbolProb selectedSymbol = symbolProbSet.iterator().next();
 
                 // adjust the difference to the selected symbol
                 // the difference must be extremely small, can be seen as negligible
@@ -96,18 +144,18 @@ public class Reel {
     // otherwise it does not make any sense because the specific reel always spin the same symbol
     private boolean isValidReelSize(){
 
-        if(this.symbols == null){
+        if(this.symbolProbSet == null){
             return false;
         }
-        return this.symbols.size() >= 2;
+        return this.symbolProbSet.size() >= 2;
     }
 
 
     // calculate total probability from the symbol set
     private BigDecimal totalProbability(){
 
-        final Optional<BigDecimal> totalProbs = this.symbols.stream()
-                .map(Symbol::getProbability)
+        final Optional<BigDecimal> totalProbs = this.symbolProbSet.stream()
+                .map(SymbolProb::getProbability)
                 .reduce(BigDecimal::add);
 
         return totalProbs.orElseThrow(

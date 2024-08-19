@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,11 +59,8 @@ public class Slot {
     // find out configured symbols in the slot machine
     public Set<Symbol> distinctSymbols(){
         return this.reels.stream()
-                .flatMap(x-> x.getSymbols().stream())
-                .map(x-> {
-                    x.setProbability(BigDecimal.ZERO);
-                    return x;
-                })
+                .flatMap(x-> x.getSymbolProbSet().stream())
+                .map(SymbolProb::getSymbol)
                 .collect(Collectors.toSet());
     }
 
