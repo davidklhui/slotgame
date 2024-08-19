@@ -62,17 +62,17 @@ class PaylineTest {
     void checkPaylineCorrectListSizeTest(){
 
         final List<Payline> paylineList = paylineService.listPaylines();
-        assertEquals(11, paylineList.size(), "Correct Payline list size");
+        assertEquals(11, paylineList.size(), "Payline List size should equal 11");
     }
 
     @Test
     void checkGetPaylineByIdTest(){
 
         final Optional<Payline> existPayline = paylineService.findPaylineById(1);
-        assertTrue(existPayline.isPresent(), "Payline id = 1 exists");
+        assertTrue(existPayline.isPresent(), "Payline id = 1 should exist");
 
         final Optional<Payline> notExistsPayline = paylineService.findPaylineById(0);
-        assertTrue(notExistsPayline.isEmpty(), "Payline id = 0 not exists");
+        assertTrue(notExistsPayline.isEmpty(), "Payline id = 0 should not exist");
 
     }
 

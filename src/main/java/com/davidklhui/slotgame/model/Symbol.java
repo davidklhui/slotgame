@@ -45,6 +45,12 @@ public class Symbol {
         this(symbolId, symbolName, false);
     }
 
+    public Symbol(final String symbolName,
+                  final boolean isWild){
+        this.symbolName = symbolName;
+        this.isWild = isWild;
+    }
+
     // use IDE generated equals and hashCode
     @Override
     public boolean equals(Object o) {

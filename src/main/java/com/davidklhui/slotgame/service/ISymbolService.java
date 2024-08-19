@@ -10,4 +10,8 @@ public interface ISymbolService {
     List<Symbol> listSymbols();
 
     Optional<Symbol> findSymbolById(final int symbolId);
+
+    Symbol saveSymbol(Symbol symbol);
+
+    boolean deleteSymbol(int symbolId);
 }

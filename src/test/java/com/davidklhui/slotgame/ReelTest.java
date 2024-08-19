@@ -54,7 +54,7 @@ class ReelTest {
         Reel reel = new Reel(symbolProbSet);
 
         // valid size
-        assertEquals(2, reel.numberOfSymbols(), "Size is correct: 2");
+        assertEquals(2, reel.numberOfSymbols(), "correct size is 2");
 
         // correct total probability
         assertTrue((Boolean) ReflectionTestUtils.invokeMethod(reel, "isTotalProbabilitySumToOne"));
@@ -120,7 +120,7 @@ class ReelTest {
                                                         .put(symbol3, 0.69999999999)
                                                         .build();
 
-        assertDoesNotThrow(()-> new Reel(symbolProbSet2), "Total Probability is slightly less than 1");
+        assertDoesNotThrow(()-> new Reel(symbolProbSet2), "Total Probability is not slightly less than 1");
 
         assertEquals(BigDecimal.ONE.setScale(9),
                 ReflectionTestUtils.invokeMethod(new Reel(symbolProbSet2), "totalProbability"));
@@ -133,7 +133,7 @@ class ReelTest {
                                                     .put(symbol4, 0.00000000001)
                                                     .build();
 
-        assertDoesNotThrow(()-> new Reel(symbolProbSet3), "Total Probability is slightly less than 1");
+        assertDoesNotThrow(()-> new Reel(symbolProbSet3), "Total Probability is not slightly less than 1");
 
 
 
@@ -168,8 +168,8 @@ class ReelTest {
 
         Reel reel = new Reel(symbolProbSet);
 
-        assertEquals(1, reel.simulate(1).size(), "Simulate Outcome Size correct");
-        assertEquals(4, reel.simulate(4).size(), "Simulate Outcome Size correct");
+        assertEquals(1, reel.simulate(1).size(), "Simulate Outcome Size = 1");
+        assertEquals(4, reel.simulate(4).size(), "Simulate Outcome Size = 4");
 
         assertThrows(
                 ReelException.class,
