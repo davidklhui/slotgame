@@ -18,3 +18,4 @@ spring:
         - classpath:insert_coordinates.sql
         - classpath:insert_paylines.sql
         - classpath:insert_payouts.sql
+        - classpath:insert_slots_reels.sql

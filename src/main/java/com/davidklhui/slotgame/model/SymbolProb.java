@@ -2,23 +2,40 @@ package com.davidklhui.slotgame.model;
 
 import com.davidklhui.slotgame.exception.SlotException;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-@Getter
+@NoArgsConstructor
+@Data
+@Entity
+@Table(name = "reel_symbol")
 public class SymbolProb {
 
     // used to set scale for the BigDecimal
     private static final int SCALE = 9;
 
-    private final Symbol symbol;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
+    private int id;
 
-    @Setter
+    @ManyToOne
+    @JoinColumn(name = "symbol_id", nullable = false,
+                referencedColumnName = "symbol_id")
+    private Symbol symbol;
+
+    @ManyToOne
+    @JoinColumn(name = "reel_id", nullable = false)
+    @JsonIgnore
+    private Reel reel;
+
     private BigDecimal probability;
 
     @JsonCreator
