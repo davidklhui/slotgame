@@ -1,6 +1,6 @@
 package com.davidklhui.slotgame.exception;
 
-public class PaylineException extends PayoutException {
+public class PaylineException extends SlotGameException {
 
     public PaylineException() {
     }

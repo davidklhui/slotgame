@@ -1,6 +1,6 @@
 package com.davidklhui.slotgame.model;
 
-import com.davidklhui.slotgame.exception.ProbabilityException;
+import com.davidklhui.slotgame.exception.SlotException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class SymbolProb {
         this.probability = probability;
 
         if(! isProbabilityValid()){
-            throw new ProbabilityException(
+            throw new SlotException(
                     String.format("Invalid Probability: given value=%s", probability)
             );
         }
