@@ -49,7 +49,7 @@ public class Reel {
     private Set<SymbolProb> symbolProbSet;
 
     @ManyToOne
-    @JoinColumn(name = "slot_id", nullable = false)
+    @JoinColumn(name = "slot_id")
     @JsonIgnore
     private Slot slot;
 

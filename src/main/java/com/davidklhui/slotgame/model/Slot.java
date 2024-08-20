@@ -2,6 +2,7 @@ package com.davidklhui.slotgame.model;
 
 import com.davidklhui.slotgame.exception.SlotException;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -12,25 +13,36 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/*
-    Defines the Slot physical definition
-    1. Reels
-    2. Number of Rows
- */
 @ToString
 @Data
 @Entity
 @Table(name = "slot")
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Slot {
+
+    /**
+         Defines the Slot physical definition
+         1. Reels
+         2. Number of Rows
+         3. name
+         4. description
+     */
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "slot_id")
-    private int slotId;
+    private Integer slotId;
 
     @Column(name = "number_of_rows")
     private int numberOfRows;
+
+    @Column(name = "slot_name")
+    private String slotName;
+
+    @Column(name = "description")
+    private String description;
 
     @OneToMany(mappedBy = "slot", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Reel> reels;
@@ -38,7 +50,9 @@ public class Slot {
 
     @JsonCreator
     public Slot(@JsonProperty("reels") final List<Reel> reels,
-                @JsonProperty("numberOfRows") final int numberOfRows){
+                @JsonProperty("numberOfRows") final int numberOfRows,
+                @JsonProperty("slotName") final String slotName,
+                @JsonProperty("description") final String description){
 
         if(reels == null){
             throw new SlotException("Incorrect Slot configuration: given reels is null");
@@ -54,7 +68,8 @@ public class Slot {
 
         this.reels = reels;
         this.numberOfRows = numberOfRows;
-
+        this.slotName = slotName;
+        this.description = description;
 
     }
 

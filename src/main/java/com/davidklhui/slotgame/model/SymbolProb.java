@@ -36,6 +36,7 @@ public class SymbolProb {
     @JsonIgnore
     private Reel reel;
 
+    @Column(name = "probability", precision = 10, scale = 10)
     private BigDecimal probability;
 
     @JsonCreator

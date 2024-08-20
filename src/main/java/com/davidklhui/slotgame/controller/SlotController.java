@@ -38,5 +38,8 @@ public class SlotController {
         );
     }
 
-
+    @PostMapping("/save")
+    public Slot saveSlot(@RequestBody final Slot slot){
+        return slotService.saveSlot(slot);
+    }
 }
