@@ -3,8 +3,6 @@ package com.davidklhui.slotgame.config;
 import com.davidklhui.slotgame.model.Payline;
 import com.davidklhui.slotgame.model.PaylineDeserialiser;
 
-import com.davidklhui.slotgame.model.Symbol;
-import com.davidklhui.slotgame.model.SymbolDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +13,10 @@ import org.springframework.context.annotation.Configuration;
 public class JacksonConfig {
 
     private final PaylineDeserialiser paylineDeserialiser;
-    private final SymbolDeserializer symbolDeserializer;
 
     @Autowired
-    public JacksonConfig(final PaylineDeserialiser paylineDeserialiser,
-                         final SymbolDeserializer symbolDeserializer){
+    public JacksonConfig(final PaylineDeserialiser paylineDeserialiser){
         this.paylineDeserialiser = paylineDeserialiser;
-        this.symbolDeserializer = symbolDeserializer;
     }
 
     /*
@@ -36,7 +31,6 @@ public class JacksonConfig {
         final SimpleModule module = new SimpleModule();
 
         module.addDeserializer(Payline.class, paylineDeserialiser);
-        module.addDeserializer(Symbol.class, symbolDeserializer);
 
         mapper.registerModule(module);
 
