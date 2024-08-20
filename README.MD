@@ -9,182 +9,193 @@ In the general design this can be extended
 To replicate this project, run the application in profile = test, 
 and pass both spring.datasource.username and spring.datasource.password
 
-the sample payload is:
-
+first identify the demo slot game config
+<pre><code>GET /slot/get/1</code></pre>
 ```json
 {
-  "numberOfRows": 3,
-  "reels": [
-    {
-      "symbolProbSet": [
+    "reels": [
         {
-          "symbol": {
-            "symbolId": 1
-          },
-          "probability": 0.9
+            "symbolProbSet": [
+                {
+                    "symbol": {
+                        "symbolId": 1,
+                        "symbolName": "Apple",
+                        "wild": false
+                    },
+                    "probability": 0.90
+                },
+                {
+                    "symbol": {
+                        "symbolId": 2,
+                        "symbolName": "Lemon",
+                        "wild": false
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "symbol": {
+                        "symbolId": 3,
+                        "symbolName": "Mango",
+                        "wild": false
+                    },
+                    "probability": 0.05
+                }
+            ],
+            "id": 1
         },
         {
-          "symbol": {
-            "symbolId": 2
-          },
-          "probability": 0.05
+            "symbolProbSet": [
+                {
+                    "symbol": {
+                        "symbolId": 1,
+                        "symbolName": "Apple",
+                        "wild": false
+                    },
+                    "probability": 0.80
+                },
+                {
+                    "symbol": {
+                        "symbolId": 2,
+                        "symbolName": "Lemon",
+                        "wild": false
+                    },
+                    "probability": 0.10
+                },
+                {
+                    "symbol": {
+                        "symbolId": 3,
+                        "symbolName": "Mango",
+                        "wild": false
+                    },
+                    "probability": 0.10
+                }
+            ],
+            "id": 2
         },
         {
-          "symbol": {
-            "symbolId": 3
-          },
-          "probability": 0.05
+            "symbolProbSet": [
+                {
+                    "symbol": {
+                        "symbolId": 1,
+                        "symbolName": "Apple",
+                        "wild": false
+                    },
+                    "probability": 0.70
+                },
+                {
+                    "symbol": {
+                        "symbolId": 2,
+                        "symbolName": "Lemon",
+                        "wild": false
+                    },
+                    "probability": 0.20
+                },
+                {
+                    "symbol": {
+                        "symbolId": 3,
+                        "symbolName": "Mango",
+                        "wild": false
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "symbol": {
+                        "symbolId": 4,
+                        "symbolName": "Pizza",
+                        "wild": false
+                    },
+                    "probability": 0.05
+                }
+            ],
+            "id": 3
+        },
+        {
+            "symbolProbSet": [
+                {
+                    "symbol": {
+                        "symbolId": 1,
+                        "symbolName": "Apple",
+                        "wild": false
+                    },
+                    "probability": 0.70
+                },
+                {
+                    "symbol": {
+                        "symbolId": 2,
+                        "symbolName": "Lemon",
+                        "wild": false
+                    },
+                    "probability": 0.10
+                },
+                {
+                    "symbol": {
+                        "symbolId": 3,
+                        "symbolName": "Mango",
+                        "wild": false
+                    },
+                    "probability": 0.10
+                },
+                {
+                    "symbol": {
+                        "symbolId": 4,
+                        "symbolName": "Pizza",
+                        "wild": false
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "symbol": {
+                        "symbolId": 5,
+                        "symbolName": "Grape",
+                        "wild": false
+                    },
+                    "probability": 0.05
+                }
+            ],
+            "id": 4
+        },
+        {
+            "symbolProbSet": [
+                {
+                    "symbol": {
+                        "symbolId": 1,
+                        "symbolName": "Apple",
+                        "wild": false
+                    },
+                    "probability": 0.90
+                },
+                {
+                    "symbol": {
+                        "symbolId": 2,
+                        "symbolName": "Lemon",
+                        "wild": false
+                    },
+                    "probability": 0.05
+                },
+                {
+                    "symbol": {
+                        "symbolId": 3,
+                        "symbolName": "Mango",
+                        "wild": false
+                    },
+                    "probability": 0.05
+                }
+            ],
+            "id": 5
         }
-      ]
-    },
-    {
-      "symbolProbSet": [
-        {
-          "symbol": {
-            "symbolId": 1
-          },
-          "probability": 0.8
-        },
-        {
-          "symbol": {
-            "symbolId": 2
-          },
-          "probability": 0.1
-        },
-        {
-          "symbol": {
-            "symbolId": 3
-          },
-          "probability": 0.1
-        }
-      ]
-    },
-    {
-      "symbolProbSet": [
-        {
-          "symbol": {
-            "symbolId": 1
-          },
-          "probability": 0.7
-        },
-        {
-          "symbol": {
-            "symbolId": 2
-          },
-          "probability": 0.2
-        },
-        {
-          "symbol": {
-            "symbolId": 3
-          },
-          "probability": 0.05
-        },
-        {
-          "symbol": {
-            "symbolId": 4
-          },
-          "probability": 0.05
-        }
-      ]
-    },
-    {
-      "symbolProbSet": [
-        {
-          "symbol": {
-            "symbolId": 1
-          },
-          "probability": 0.7
-        },
-        {
-          "symbol": {
-            "symbolId": 2
-          },
-          "probability": 0.1
-        },
-        {
-          "symbol": {
-            "symbolId": 3
-          },
-          "probability": 0.1
-        },
-        {
-          "symbol": {
-            "symbolId": 4
-          },
-          "probability": 0.05
-        },
-        {
-          "symbol": {
-            "symbolId": 5
-          },
-          "probability": 0.05
-        }
-      ]
-    },
-    {
-      "symbolProbSet": [
-        {
-          "symbol": {
-            "symbolId": 1
-          },
-          "probability": 0.9
-        },
-        {
-          "symbol": {
-            "symbolId": 2
-          },
-          "probability": 0.05
-        },
-        {
-          "symbol": {
-            "symbolId": 3
-          },
-          "probability": 0.05
-        }
-      ]
-    }
-  ]
+    ],
+    "numberOfRows": 3,
+    "slotId": 1,
+    "numberOfReels": 5
 }
 ```
 
-And the sample result is (Note that you may have different result because of the randomness)
+the sample spin result is as follows (Note that you may have different result because of the randomness)
+
+<pre><code>GET /slotgame/1/spin</code></pre>
 ```json
 {
   "spinOutcomes": [
-    [
-      {
-        "symbolId": 1,
-        "symbolName": "Apple",
-        "wild": false
-      },
-      {
-        "symbolId": 1,
-        "symbolName": "Apple",
-        "wild": false
-      },
-      {
-        "symbolId": 1,
-        "symbolName": "Apple",
-        "wild": false
-      }
-    ],
-    [
-      {
-        "symbolId": 1,
-        "symbolName": "Apple",
-        "wild": false
-      },
-      {
-        "symbolId": 1,
-        "symbolName": "Apple",
-        "wild": false
-      },
-      {
-        "symbolId": 1,
-        "symbolName": "Apple",
-        "wild": false
-      }
-    ],
     [
       {
         "symbolId": 1,
@@ -204,8 +215,42 @@ And the sample result is (Note that you may have different result because of the
     ],
     [
       {
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      },
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      },
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      }
+    ],
+    [
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
+        "wild": false
+      },
+      {
         "symbolId": 4,
         "symbolName": "Pizza",
+        "wild": false
+      },
+      {
+        "symbolId": 4,
+        "symbolName": "Pizza",
+        "wild": false
+      }
+    ],
+    [
+      {
+        "symbolId": 1,
+        "symbolName": "Apple",
         "wild": false
       },
       {
@@ -240,18 +285,18 @@ And the sample result is (Note that you may have different result because of the
   "slotSpinPayouts": [
     {
       "payoutDefinition": {
-        "payoutId": 5,
+        "payoutId": 1,
         "payline": {
-          "paylineId": 5,
-          "paylineName": "inverted v shape",
+          "paylineId": 1,
+          "paylineName": "horizontal line 1",
           "coordinates": [
             {
               "reelIndex": 0,
-              "rowIndex": 2
+              "rowIndex": 0
             },
             {
               "reelIndex": 1,
-              "rowIndex": 1
+              "rowIndex": 0
             },
             {
               "reelIndex": 2,
@@ -259,11 +304,11 @@ And the sample result is (Note that you may have different result because of the
             },
             {
               "reelIndex": 3,
-              "rowIndex": 1
+              "rowIndex": 0
             },
             {
               "reelIndex": 4,
-              "rowIndex": 2
+              "rowIndex": 0
             }
           ]
         },
@@ -423,7 +468,44 @@ And the sample result is (Note that you may have different result because of the
 }
 ```
 
-Payline configurations check the following endpoint (currently are manual pre-defined data)
+Symbol configurations check the following endpoint
+<pre><code>GET /symbol/list</code></pre>
+```json
+[
+  {
+    "symbolId": 1,
+    "symbolName": "Apple",
+    "wild": false
+  },
+  {
+    "symbolId": 2,
+    "symbolName": "Lemon",
+    "wild": false
+  },
+  {
+    "symbolId": 3,
+    "symbolName": "Mango",
+    "wild": false
+  },
+  {
+    "symbolId": 4,
+    "symbolName": "Pizza",
+    "wild": false
+  },
+  {
+    "symbolId": 5,
+    "symbolName": "Grape",
+    "wild": false
+  },
+  {
+    "symbolId": 6,
+    "symbolName": "Wild",
+    "wild": true
+  }
+]
+```
+
+Payline configurations check the following endpoint
 
 <pre><code>GET /payline/list</code></pre>
 

@@ -9,4 +9,6 @@ public interface ISlotGameService {
     SlotSpinResult spin(SlotGameDefinition slotGameDefinition);
 
     SlotSpinResult spin(Slot slot);
+
+    SlotSpinResult spin(int slotId);
 }

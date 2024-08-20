@@ -1,12 +1,14 @@
 package com.davidklhui.slotgame.service;
 
 import com.davidklhui.slotgame.exception.PaylineException;
+import com.davidklhui.slotgame.exception.SlotGameException;
 import com.davidklhui.slotgame.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -14,9 +16,13 @@ public class SlotGameServiceImpl implements ISlotGameService {
 
     private final IPayoutDefinitionService payoutDefinitionService;
 
+    private final ISlotService slotService;
+
     @Autowired
-    public SlotGameServiceImpl(final IPayoutDefinitionService payoutDefinitionService) {
+    public SlotGameServiceImpl(final IPayoutDefinitionService payoutDefinitionService,
+                               final ISlotService slotService) {
         this.payoutDefinitionService = payoutDefinitionService;
+        this.slotService = slotService;
     }
 
     /*
@@ -43,6 +49,19 @@ public class SlotGameServiceImpl implements ISlotGameService {
 
         return slotSpinResult(outcomes, payoutDefinitions);
 
+    }
+
+    @Override
+    public SlotSpinResult spin(int slotId) {
+
+        final Optional<Slot> slotOptional = slotService.findSlotById(slotId);
+        if(slotOptional.isPresent()){
+            return spin(slotOptional.get());
+        } else {
+            throw new SlotGameException(
+                    String.format("Cannot perform spin on unknown slot: given slot id = %d", slotId)
+            );
+        }
     }
 
     /*
