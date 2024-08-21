@@ -4,11 +4,13 @@ import com.davidklhui.slotgame.model.Payline;
 import com.davidklhui.slotgame.repository.PaylineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class PaylineServiceImpl implements IPaylineService {
 
     private final PaylineRepository paylineRepository;

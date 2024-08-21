@@ -10,4 +10,6 @@ public interface ISlotService {
     List<Slot> listSlots();
 
     Optional<Slot> findSlotById(final int slotId);
+
+    Slot saveSlot(Slot slot);
 }

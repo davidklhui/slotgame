@@ -1,6 +1,6 @@
 package com.davidklhui.slotgame.controlleradvice;
 
-import com.davidklhui.slotgame.exception.SymbolException;
+import com.davidklhui.slotgame.exception.SlotGameException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetail> handleSymbolException(SymbolException e, WebRequest request){
+    @ExceptionHandler(SlotGameException.class)
+    public ResponseEntity<ErrorDetail> handleSymbolException(SlotGameException e, WebRequest request){
         ErrorDetail errorDetail = ErrorDetail.builder()
                 .status(HttpStatus.NOT_FOUND)
                 .message(e.getMessage())

@@ -1,25 +1,35 @@
 package com.davidklhui.slotgame;
 
-import com.davidklhui.slotgame.exception.SlotException;
-import com.davidklhui.slotgame.model.Reel;
+
 import com.davidklhui.slotgame.model.Slot;
-import com.davidklhui.slotgame.model.Symbol;
+import com.davidklhui.slotgame.service.ISlotService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestPropertySource("/application-dev.yml")
+@AutoConfigureMockMvc
 @SpringBootTest(classes = SlotGameApplication.class)
 @Transactional
 @Slf4j
@@ -31,133 +41,183 @@ import static org.junit.jupiter.api.Assertions.*;
 })
 class SlotTest {
 
-    private List<Reel> reels;
+    /**
+     * This class test slot definition (Slot - Reel - Symbol)
+     *
+     * A: Service
+     *
+     * B: REST API
+     *
+     */
 
-    @BeforeEach
-    void preConfigReels(){
-        Symbol symbol1 = new Symbol(1, "1", false);
-        Symbol symbol2 = new Symbol(2, "2", false);
-        Symbol symbol3 = new Symbol(3, "3", false);
-        Symbol symbol4 = new Symbol(4, "4", false);
-        Symbol symbol5 = new Symbol(5, "5", false);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-        Reel reel1 = new Reel(
-                Map.of(symbol1, BigDecimal.valueOf(0.1),
-                        symbol2, BigDecimal.valueOf(0.2),
-                        symbol3, BigDecimal.valueOf(0.6),
-                        symbol4, BigDecimal.valueOf(0.1))
-        );
+    @Autowired
+    private MockMvc mockMvc;
 
-        Reel reel2 = new Reel(
-                Map.of(symbol1, BigDecimal.valueOf(0.1),
-                        symbol2, BigDecimal.valueOf(0.2),
-                        symbol3, BigDecimal.valueOf(0.6),
-                        symbol4, BigDecimal.valueOf(0.1))
-        );
+    @Autowired
+    private ISlotService slotService;
 
-        Reel reel3 = new Reel(
-                Map.of(symbol1, BigDecimal.valueOf(0.1),
-                        symbol2, BigDecimal.valueOf(0.9))
-        );
+    @Value("classpath:save_new_slot.json")
+    private Resource newSlotSampleJsonResource;
 
-        Reel reel4 = new Reel(
-                Map.of(symbol1, BigDecimal.valueOf(0.2),
-                        symbol2, BigDecimal.valueOf(0.2),
-                        symbol3, BigDecimal.valueOf(0.2),
-                        symbol4, BigDecimal.valueOf(0.2),
-                        symbol5, BigDecimal.valueOf(0.2))
-        );
+    @Value("classpath:save_existing_slot.json")
+    private Resource existingSlotSampleJsonResource;
 
-        Reel reel5 = new Reel(
-                Map.of(symbol1, BigDecimal.valueOf(0.002),
-                        symbol2, BigDecimal.valueOf(0.001),
-                        symbol3, BigDecimal.valueOf(0.001),
-                        symbol4, BigDecimal.valueOf(0.996))
-        );
+    /**
+        A: Service methods
+            1. list slot
+            2. get slot by id
+            3. save slot
+     */
 
-        reels = Arrays.asList(reel1, reel2, reel3, reel4, reel5);
+    @Test
+    void listSlotsTest(){
+        // from the .sql file there is only 1 slot record
+        List<Slot> slotList = slotService.listSlots();
 
-    }
+        assertEquals(1, slotList.size(), "Slot list size = 1");
 
-    @AfterEach
-    void clearReels(){
-        reels = null;
     }
 
     @Test
-    void slotCorrectConfigTest(){
-        int numberOfRows = 3;
+    void getSlotTest(){
 
-        assertDoesNotThrow(
-                ()-> new Slot(reels, numberOfRows),
-                "Does not throw during construction of slot"
-        );
+        // from the .sql file there is only 1 slot record, which is id = 1
+        Optional<Slot> existingSlot = slotService.findSlotById(1);
+        assertTrue(existingSlot.isPresent(), "Slot id = 1 should exist");
 
-        Slot slot = new Slot(reels, numberOfRows);
+        Optional<Slot> nonExistingSlot = slotService.findSlotById(0);
+        assertFalse(nonExistingSlot.isPresent(), "Slot id = 0 should not exist");
 
-        // check have correct number of reels
-        assertEquals(5, slot.getNumberOfReels(), "Reels has size 5");
+    }
 
-        // perform simulation
-        List<List<Symbol>> outcomes = slot.spin();
 
-        // check if it has the correct dimension
-        // outer is expected to have 5, inner have 3
-        assertEquals(5, outcomes.size(), "Outer size should be 5");
+    /**
+        B: REST API
+            1. GET  /slot/list
+            2. GET  /slot/get/{slotId} (existing / non-existing record)
+            3. POST /slot/save (new record)
+            4. POST /slot/save (existing record)
+     */
+    @Test
+    void listSlotApiTest() throws Exception {
 
-        outcomes.forEach(outcome-> {
-            assertEquals(numberOfRows, outcome.size(), "Inner size should be 3");
-        });
+        mockMvc.perform(MockMvcRequestBuilders.get("/slot/list"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
 
-        // for reassurance, take a look at the outcome
-        log.debug("Slot simulation outcome: {}", outcomes);
+    @Test
+    void getExistingSlotApiTest() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/slot/get/{slotId}", 1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.slotId", is(1)))
+                .andExpect(jsonPath("$.slotName", is("Demo 1")))
+                .andExpect(jsonPath("$.description", is("Demo 5x3 slot design")))
+                .andExpect(jsonPath("$.numberOfRows", is(3)))
+                .andExpect(jsonPath("$.reels", hasSize(5)));
+    }
+
+    @Test
+    void getNonExistingSlotApiTest() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/slot/get/{slotId}", 0))
+                .andExpect(status().is4xxClientError());
+
+    }
+
+    @Test
+    void saveNewSlotApiTest() throws Exception {
+        // before save, check size of slots = 1
+        List<Slot> slotList = slotService.listSlots();
+        assertEquals(1, slotList.size(), "Slot list size = 1");
+
+        Optional<Slot> slotId2 = slotService.findSlotById(2);
+        assertTrue(slotId2.isEmpty(), "Slot id = 2 should not exists in DB");
+
+        // read the json as string
+        String jsonStr = newSlotSampleJsonResource.getContentAsString(StandardCharsets.UTF_8);
+
+        // perform POST
+        // slotId is expected to be 2, if unsure, use jsonPath("$.slotId").exists() instead
+        mockMvc.perform(MockMvcRequestBuilders.post("/slot/save")
+                    .contentType(APPLICATION_JSON)
+                    .content(jsonStr))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.slotId", is(2)))
+                .andExpect(jsonPath("$.slotName", is("Demo 2")))
+                .andExpect(jsonPath("$.numberOfRows", is(4)))
+                .andExpect(jsonPath("$.reels", hasSize(3)));
+
+        // after save, check size of slots = 2
+        slotList = slotService.listSlots();
+        assertEquals(2, slotList.size(), "Slot list size = 2 after inserted");
+
+        // retrieve from DB, and check if it exists
+        slotId2 = slotService.findSlotById(2);
+        assertTrue(slotId2.isPresent(), "Slot id = 2 should exists in DB");
 
     }
 
 
     @Test
-    void incorrectSlotConfgTest(){
+    void saveExistingSlotApiTest() throws Exception {
+        // before save, check size of slots = 1
+        List<Slot> slotList = slotService.listSlots();
+        assertEquals(1, slotList.size(), "Slot list size = 1");
 
-        // incorrect num of columns (reels)
-        // must have at least 3
-        List<Reel> reelsWithSize0 = new ArrayList<>();
-        assertThrows(
-                SlotException.class,
-                ()-> new Slot(reelsWithSize0, 3),
-                "Slot must not num reels less than 3"
-        );
+        Optional<Slot> slotId1 = slotService.findSlotById(1);
+        assertTrue(slotId1.isPresent(), "Slot id = 1 should exists in DB");
 
-        List<Reel> reelsWithSize1 = reels.subList(0, 1);
-        assertThrows(
-                SlotException.class,
-                ()-> new Slot(reelsWithSize1, 3),
-                "Slot must not num reels less than 3"
-        );
+        Slot slot = slotId1.get();
+        assertEquals("Demo 1", slot.getSlotName(), "Slot id=1 name is 'Demo 1'");
 
-        List<Reel> reelsWithSize2 = reels.subList(0, 1);
-        assertThrows(
-                SlotException.class,
-                ()-> new Slot(reelsWithSize2, 3),
-                "Slot must not num reels less than 3"
-        );
+        // read the json as string
+        String jsonStr = existingSlotSampleJsonResource.getContentAsString(StandardCharsets.UTF_8);
 
+        // perform POST
+        // slotId is expected to be 2, if unsure, use jsonPath("$.slotId").exists() instead
+        mockMvc.perform(MockMvcRequestBuilders.post("/slot/save")
+                        .contentType(APPLICATION_JSON)
+                        .content(jsonStr))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.slotId", is(1)))
+                .andExpect(jsonPath("$.slotName", is("Demo 1 (Updated)")))
+                .andExpect(jsonPath("$.numberOfRows", is(3)))
+                .andExpect(jsonPath("$.reels", hasSize(5)));
 
-        // this will not throw because supplied reel size = 3
-        List<Reel> reelsWithSize3 = reels.subList(0, 3);
-        assertDoesNotThrow(
-                ()-> new Slot(reelsWithSize3, 3),
-                "Slot have num reels at least 3"
-        );
+        // after save, size should remain 1
+        slotList = slotService.listSlots();
+        assertEquals(1, slotList.size(), "Slot list size remains 1 after inserted");
 
-
-        // incorrect num of rows (<=0)
-        assertThrows(
-                SlotException.class,
-                ()-> new Slot(reels, 0),
-                "Slot must not have num rows = 0"
-        );
-
+        // retrieve from DB, and check if it exists
+        slotId1 = slotService.findSlotById(1);
+        assertTrue(slotId1.isPresent(), "Slot id = 1 should still exist in DB");
+        slot = slotId1.get();
+        assertEquals("Demo 1 (Updated)", slot.getSlotName(), "Slot id=1 name is updated to 'Demo 1 (Updated)'");
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
