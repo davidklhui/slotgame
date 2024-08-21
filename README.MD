@@ -1,12 +1,16 @@
 
+The current DB structure of this project is:
+![ER-Diagram](./images/ER-Diagram.png "ER-Diagram")
 
-Currently support single game by providing slot configuration and the payout definition to perform a single game simulation
+
+
+Currently, it supports single game by providing slot configuration and the payout definition to perform a single game simulation
 
 
 This sample slot game using 5 reels x 3 rows as a demo
 In the general design this can be extended
 
-To replicate this project, run the application in profile = test, 
+To run this project, run the application in profile = test, 
 and pass both spring.datasource.username and spring.datasource.password
 
 first identify the demo slot game config
