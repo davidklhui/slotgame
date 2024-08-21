@@ -33,7 +33,7 @@ public class SlotServiceImpl implements ISlotService {
     }
 
     @Override
-    public Optional<Slot> findSlotById(int slotId) {
+    public Optional<Slot> findSlotById(final int slotId) {
         return slotRepository.findById(slotId);
     }
 

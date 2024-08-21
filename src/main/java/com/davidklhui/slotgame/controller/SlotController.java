@@ -31,11 +31,13 @@ public class SlotController {
     @GetMapping("/get/{slotId}")
     public Slot getSlotById(@PathVariable("slotId") final int slotId){
         final Optional<Slot> slotOptional = slotService.findSlotById(slotId);
-        return slotOptional.orElseThrow(
-                ()-> new SlotException(
-                        String.format("Slot not found, given id = %d", slotId)
-                )
-        );
+        if(slotOptional.isPresent()) {
+            return slotOptional.get();
+        } else {
+            throw new SlotException(
+                            String.format("Slot not found, given id = %d", slotId)
+            );
+        }
     }
 
     @PostMapping("/save")
