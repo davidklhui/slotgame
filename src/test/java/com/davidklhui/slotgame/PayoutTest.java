@@ -29,14 +29,16 @@ import static org.mockito.Mockito.when;
 @Transactional
 @Slf4j
 @SqlGroup({
-        @Sql(scripts = "/insert_symbols.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(scripts = "/insert_symbols.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS),
+        @Sql(scripts = "/insert_slots_reels.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "/insert_coordinates.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "/insert_paylines.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "/insert_payouts.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "/delete_payouts.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
         @Sql(scripts = "/delete_paylines.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
         @Sql(scripts = "/delete_coordinates.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
-        @Sql(scripts = "/delete_symbols.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+        @Sql(scripts = "/delete_slots_reels.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+        @Sql(scripts = "/delete_symbols.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 
 })
 class PayoutTest {

@@ -2,6 +2,7 @@ package com.davidklhui.slotgame.model;
 
 import com.davidklhui.slotgame.exception.SlotException;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -9,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,6 +41,9 @@ public class Slot {
     @Column(name = "number_of_rows")
     private int numberOfRows;
 
+    @Column(name = "number_of_reels")
+    private int numberOfReels;
+
     @Column(name = "slot_name")
     private String slotName;
 
@@ -47,36 +53,52 @@ public class Slot {
     @OneToMany(mappedBy = "slot", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Reel> reels;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "slot_id")
+    @JsonIgnore
+    private Set<PayoutDefinition> payoutDefinitions;
 
     @JsonCreator
-    public Slot(@JsonProperty("reels") final List<Reel> reels,
-                @JsonProperty("numberOfRows") final int numberOfRows,
+    public Slot(@JsonProperty("numberOfRows") final int numberOfRows,
+                @JsonProperty("numberOfReels") final int numberOfReels,
                 @JsonProperty("slotName") final String slotName,
                 @JsonProperty("description") final String description){
 
-        if(reels == null){
-            throw new SlotException("Incorrect Slot configuration: given reels is null");
-        }
-        if(reels.size() < 3){
+        if(numberOfReels < 3){
             throw new SlotException(
-                    String.format("Incorrect Slot configuration, reels size <3, given %d", reels.size()));
+                    String.format("Incorrect Slot configuration: number of rows is invalid: give %d", numberOfReels));
         }
         if(numberOfRows <= 0){
             throw new SlotException(
                     String.format("Incorrect Slot configuration: number of rows is invalid: give %d", numberOfRows));
         }
 
-        this.reels = reels;
         this.numberOfRows = numberOfRows;
+        this.numberOfReels = numberOfReels;
         this.slotName = slotName;
         this.description = description;
+
+        this.reels = new ArrayList<>();
 
     }
 
 
     // get the number of reels
-    public int getNumberOfReels(){
+    public int getNumberOfConfiguredReels(){
         return this.reels.size();
+    }
+
+    // add payout definition to the slot
+    public void addPayoutDefinition(final PayoutDefinition payoutDefinition){
+        if(this.payoutDefinitions == null) this.payoutDefinitions = new HashSet<>();
+        this.payoutDefinitions.add(payoutDefinition);
+    }
+
+    // add reel configuration to the slot
+    public void addReel(final Reel reel){
+        if(this.reels == null) this.reels = new ArrayList<>();
+        this.reels.add(reel);
+
     }
 
     // find out configured symbols in the slot machine
@@ -106,5 +128,7 @@ public class Slot {
                 .toList();
 
     }
+
+
 
 }

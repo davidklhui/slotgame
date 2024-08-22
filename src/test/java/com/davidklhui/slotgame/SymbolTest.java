@@ -140,14 +140,14 @@ class SymbolTest {
     @Test
     void getSymbolApiTest() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/symbol/get/2"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/symbol/{symbolId}/get", 2))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.symbolId", is(2)))
                 .andExpect(jsonPath("$.symbolName", is("Lemon")))
                 .andExpect(jsonPath("$.wild",is(false)));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/symbol/get/0"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/symbol/{symbolId}/get", 0))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -221,7 +221,7 @@ class SymbolTest {
         assertTrue(symbolId1.isPresent());
 
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/symbol/delete/{symbolId}", 1))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/symbol/{symbolId}/delete", 1))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", is(true)));
@@ -232,7 +232,7 @@ class SymbolTest {
 
 
         // delete non-existing symbol
-        mockMvc.perform(MockMvcRequestBuilders.delete("/symbol/delete/{symbolId}", 0))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/symbol/{symbolId}/delete", 0))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", is(false)));
