@@ -29,7 +29,7 @@ public class SymbolController {
         return symbolService.listSymbols();
     }
 
-    @GetMapping("/get/{symbolId}")
+    @GetMapping("/{symbolId}/get")
     public Symbol getSymbolById(@PathVariable("symbolId") final int symbolId){
         Optional<Symbol> symbolOptional = symbolService.findSymbolById(symbolId);
 
@@ -46,7 +46,7 @@ public class SymbolController {
         return symbolService.saveSymbol(symbol);
     }
 
-    @DeleteMapping("/delete/{symbolId}")
+    @DeleteMapping("/{symbolId}/delete")
     public boolean deleteSymbol(@PathVariable("symbolId") final int symbolId){
 
         return symbolService.deleteSymbol(symbolId);

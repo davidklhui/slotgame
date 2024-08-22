@@ -28,7 +28,7 @@ public class PaylineController {
         return paylineService.listPaylines();
     }
 
-    @GetMapping("/get/{paylineId}")
+    @GetMapping("/{paylineId}/get")
     public Payline getPayline(@PathVariable("paylineId") final int paylineId){
         Optional<Payline> paylineOptional = paylineService.findPaylineById(paylineId);
         if(paylineOptional.isPresent()){

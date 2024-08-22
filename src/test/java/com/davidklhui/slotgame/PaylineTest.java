@@ -90,14 +90,14 @@ class PaylineTest {
     @Test
     void getPaylineByIdTest() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/payline/get/{id}", 1))
+        mockMvc.perform(MockMvcRequestBuilders.get("/payline/{paylineId}/get", 1))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.paylineId", is(1)))
                 .andExpect(jsonPath("$.paylineName", is("horizontal line 1")))
                 .andExpect(jsonPath("$.coordinates", hasSize(5)));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/payline/{id}", 0))
+        mockMvc.perform(MockMvcRequestBuilders.get("/payline/{paylineId}/get", 0))
                 .andExpect(status().is4xxClientError());
     }
 }

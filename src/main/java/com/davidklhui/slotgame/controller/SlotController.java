@@ -1,6 +1,7 @@
 package com.davidklhui.slotgame.controller;
 
 import com.davidklhui.slotgame.exception.SlotException;
+import com.davidklhui.slotgame.model.PayoutDefinition;
 import com.davidklhui.slotgame.model.Slot;
 import com.davidklhui.slotgame.service.ISlotService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class SlotController {
         return slotService.listSlots();
     }
 
-    @GetMapping("/get/{slotId}")
+    @GetMapping("/{slotId}/get")
     public Slot getSlotById(@PathVariable("slotId") final int slotId){
         final Optional<Slot> slotOptional = slotService.findSlotById(slotId);
         if(slotOptional.isPresent()) {
@@ -40,8 +41,20 @@ public class SlotController {
         }
     }
 
+    @PostMapping("/{slotId}/payout-defn/add")
+    public boolean addPayoutDefinitionToSlot(
+            @PathVariable("slotId") final int slotId,
+            @RequestBody final PayoutDefinition payoutDefinition){
+
+        return slotService.addPayoutDefinition(slotId, payoutDefinition);
+
+    }
+
+
     @PostMapping("/save")
     public Slot saveSlot(@RequestBody final Slot slot){
         return slotService.saveSlot(slot);
     }
+
+
 }

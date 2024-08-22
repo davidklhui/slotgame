@@ -1,9 +1,11 @@
 package com.davidklhui.slotgame.service;
 
+import com.davidklhui.slotgame.model.PayoutDefinition;
 import com.davidklhui.slotgame.model.Slot;
 import com.davidklhui.slotgame.repository.SlotRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
 public class SlotServiceImpl implements ISlotService {
@@ -43,6 +46,7 @@ public class SlotServiceImpl implements ISlotService {
      */
     @Override
     public Slot saveSlot(Slot slot){
+        log.info("slot: {}", slot);
         /*
             check if slot id is null
             if so, then required to perform some steps
@@ -56,6 +60,26 @@ public class SlotServiceImpl implements ISlotService {
     }
 
     /*
+        logic when adding payout definition
+
+     */
+    @Override
+    public boolean addPayoutDefinition(final int slotId, final PayoutDefinition payoutDefinition){
+        final Optional<Slot> existingSlotOptional = slotRepository.findById(slotId);
+        if(existingSlotOptional.isPresent()){
+            final Slot existingSlot = existingSlotOptional.get();
+            existingSlot.addPayoutDefinition(payoutDefinition);
+
+            slotRepository.save(existingSlot);
+
+            return true;
+        }
+        return false;
+
+    }
+
+
+    /*
         logic when creating slot
      */
     private Slot createSlot(Slot slot){
@@ -67,9 +91,16 @@ public class SlotServiceImpl implements ISlotService {
 
     /*
         logic when updating slot
+        update slot should not update payout definition and reels at the same time
+        so set payout definitions and reels here
      */
     private Slot updateSlot(final Slot slot){
         setSlotProperties(slot);
+        Optional<Slot> existingRecord = slotRepository.findById(slot.getSlotId());
+        if(existingRecord.isPresent()){
+            slot.setPayoutDefinitions(existingRecord.get().getPayoutDefinitions());
+            slot.setReels(existingRecord.get().getReels());
+        }
         return slotRepository.save(slot);
     }
 

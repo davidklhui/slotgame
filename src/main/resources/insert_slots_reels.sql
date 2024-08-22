@@ -1,6 +1,6 @@
 
-INSERT INTO slot (slot_id, number_of_rows, slot_name, description) VALUES
-(1, 3, 'Demo 1', 'Demo 5x3 slot design');
+INSERT INTO slot (slot_id, number_of_rows, number_of_reels, slot_name, description) VALUES
+(1, 3, 5, 'Demo 1', 'Demo 5x3 slot design');
 
 INSERT INTO reel (reel_id, slot_id) VALUES
 (1, 1), (2, 1), (3, 1), (4, 1), (5, 1);

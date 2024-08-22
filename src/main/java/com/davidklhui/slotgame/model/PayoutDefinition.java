@@ -18,7 +18,7 @@ import java.util.List;
     4. the payout amount
  */
 @Entity
-@Table(name = "payout")
+@Table(name = "payout_definition")
 @NoArgsConstructor
 @Data
 @JsonDeserialize(using = PayoutDefinitionDeserializer.class)

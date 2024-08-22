@@ -1,0 +1,6 @@
+
+
+1. game definition
+2. initialize symbols probability for a new slot
+3. game spin (record player's credits, spin outcomes, matched payout-definition)
+4. manage payout definition in slot
